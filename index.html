@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HealthCare+ | Book Appointment</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #0d47a1, #1976d2);
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+    .navbar {
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.4) !important;
+      padding: 15px 30px;
+      transition: all 0.3s ease;
+    }
+    .navbar a {
+      transition: 0.3s ease;
+    }
+    .navbar a:hover {
+      opacity: 0.85;
+    }
+
+    /* Hero */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 15px;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+   .btn-modern {
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-consult {
+  background: linear-gradient(135deg, #06b6d4, #3b82f6); /* teal → soft blue */
+  color: #fff !important;
+  border: none;
+}
+
+.btn-consult:hover {
+  background: linear-gradient(135deg, #0891b2, #2563eb);
+  box-shadow: 0 4px 12px rgba(0, 150, 200, 0.4);
+  transform: translateY(-2px);
+}
+
+    /* Cards */
+    .about-card {
+      background: white;
+      border-radius: 18px;
+      padding: 30px 20px;
+      transition: all 0.3s ease;
+      border: none;
+    }
+    .about-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    .about-card .icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    /* Glassmorphic Form */
+    .glass-card {
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(14px);
+      color: #000;
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .appointment-section {
+      background: linear-gradient(135deg, #f0f8ff, #e6f7ff);
+      padding: 80px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .appointment-card {
+      background: #fff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .appointment-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .appointment-card .title {
+      font-size: 2rem;
+      color: #0077b6;
+      margin-bottom: 10px;
+    }
+
+    .appointment-card .subtitle {
+      font-size: 1.1rem;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    .appointment-card .subtitle span {
+      color: #0096c7;
+      font-weight: bold;
+    }
+
+    .features {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .features li {
+      font-size: 1rem;
+      margin: 10px 0;
+      color: #222;
+      display: flex;
+      align-items: center;
+    }
+
+    .features li::before {
+      content: "✔️";
+      margin-right: 10px;
+      color: #38b000;
+    }
+
+    .btn-book {
+      display: inline-block;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      background: #0077b6;
+      color: #fff;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-book:hover {
+      background: #0096c7;
+      box-shadow: 0 5px 15px rgba(0, 150, 199, 0.3);
+    }
+
+    /* Form Inputs */
+    .form-control {
+      border-radius: 14px;
+      border: 1px solid #ddd;
+      padding: 14px 16px;
+      transition: 0.3s ease;
+      font-size: 0.95rem;
+    }
+    .form-control:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 10px rgba(25, 118, 210, 0.3);
+    }
+
+    /* Hospitals */
+    .hospital-card {
+      border: none;
+      transition: all 0.3s ease;
+      border-radius: 20px;
+    }
+    .hospital-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+
+    /* Testimonials */
+    .testimonial-card {
+      background: #f9f9f9; /* light background */
+      color: #000 !important; /* force black text */
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 14px 35px rgba(0,0,0,0.18);
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 25px 0;
+      text-align: center;
+      color: #eee;
+      margin-top: 50px;
+    }
+    footer small {
+      opacity: 0.8;
+    }
+
+    /* Extra Mobile Enhancements */
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 80px;
+  }
+  .hero h1 {
+    font-size: 1.8rem;
+    line-height: 1.4;
+  }
+  .hero p {
+    font-size: 0.95rem;
+  }
+  .btn-modern {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+  }
+  .navbar .btn {
+    margin: 6px 0;
+    width: 100%;
+  }
+  .about-card {
+    padding: 20px;
+  }
+  .appointment-card, .glass-card {
+    padding: 20px;
+  }
+  .form-control {
+    font-size: 1rem;
+    padding: 16px;
+  }
+  .row.g-4 > [class*='col-'] {
+    flex: 0 0 100%; /* stack on small screens */
+    max-width: 100%;
+  }
+  .hospital-card img {
+    max-height: 100px;
+    object-fit: cover;
+  }
+  .testimonial-card {
+    font-size: 0.95rem;
+  }
+}
+
+/* Navbar mobile */
+/* On mobile: full-width buttons */
+@media (max-width: 991px) {
+  .navbar-collapse .btn {
+    margin: 6px 0;
+    width: 100%;
+  }
+}
+
+/* Appointment form mobile */
+.sticky-btn {
+  position: sticky;
+  bottom: 10px;
+  z-index: 10;
+}
+
+
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold fs-3" href="#">HealthCare+</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse text-center" id="navbarMenu">
+      <div class="ms-auto d-lg-flex gap-2">
+        <a href="{% url 'login' %}" class="btn btn-light btn-modern">Login</a>
+        <a href="{% url 'signup' %}" class="btn btn-warning btn-modern">Sign Up</a>
+        <a href="#book" class="btn btn-success btn-modern nav-link-book">Book Appointment</a>
+        <a href="/virtual-consult" class="btn btn-consult btn-modern nav-link-consult">Online Consulting</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1 class="fw-bold animate__animated animate__fadeInDown">Your Health, Our Priority</h1>
+    <p class="lead animate__animated animate__fadeInUp mt-3">
+      Book appointments, consult doctors & access records — all in one place.
+    </p>
+    <a href="#book" class="btn btn-light btn-modern mt-4 animate__animated animate__zoomIn">Get Started</a>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="py-5 bg-light text-dark" id="about">
+    <div class="container text-center">
+      <h2 class="fw-bold display-6 mb-5">Why Choose <span style="color:#1976d2;">HealthCare+</span></h2>
+      <div class="row g-4">
+        <div class="col-md-3"><div class="about-card h-100"><div class="icon" style="color:#1976d2;">🩺</div><h5 class="fw-bold">Expert Doctors</h5><p>Consult with top-certified doctors.</p></div></div>
+        <div class="col-md-3"><div class="about-card h-100"><div class="icon" style="color:#28a745;">⏱</div><h5 class="fw-bold">Quick Appointments</h5><p>Skip queues with instant booking.</p></div></div>
+        <div class="col-md-3"><div class="about-card h-100"><div class="icon" style="color:#ff5733;">📞</div><h5 class="fw-bold">24/7 Support</h5><p>Round-the-clock helpline for you.</p></div></div>
+        <div class="col-md-3"><div class="about-card h-100"><div class="icon" style="color:#9b59b6;">📂</div><h5 class="fw-bold">Access Records</h5><p>View history securely anytime.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Book Appointment -->
+  <section class="py-5" id="book">
+    <div class="container">
+      <div class="row align-items-center">
+        <!-- Info -->
+        <div class="col-md-6 mb-4">
+          <h2 class="fw-bold mb-3">Book Your Appointment</h2>
+          <p class="fs-6">Choose your doctor, hospital & time — in just a few clicks.</p>
+          <ul class="list-unstyled fs-6">
+            <li>✅ Access top specialists</li>
+            <li>✅ Instant confirmations</li>
+            <li>✅ Manage appointments easily</li>
+            <li>✅ 24/7 patient support</li>
+          </ul>
+        </div>
+        <!-- Form -->
+        <div class="col-md-6">
+          <div class="glass-card p-4 shadow-lg">
+            <h4 class="fw-bold text-center mb-4">Book Appointment</h4>
+            <form id="appointmentForm">
+              <input type="text" class="form-control mb-3" placeholder="Patient ID" required/>
+              <select class="form-control mb-3" required>
+                <option value="">Select City</option><option>Madurai</option><option>Chennai</option>
+              </select>
+              <select class="form-control mb-3" required>
+                <option value="">Select Hospital</option><option>Gov Rajaji Hospital</option><option>Gov Hospital - Thoppur</option>
+              </select>
+              <select class="form-control mb-3" required>
+                <option value="">Select Department</option><option>General (OP)</option><option>General Surgery</option><option>Orthopedics</option><option>Obsterics & Gynaecology</option><option>Paediatric</option><option>Cardiology</option><option>Neurology & Neurosuryery</option><option>Nephrology</option><option>Oncology</option><option>Psychiatry</option><option>STD & TB</option><option>Dcrmatology</option><option>Gastro intrology</option>
+              </select>
+              <input type="date" id="date" name="date" class="form-control mb-3" required/>
+              <input type="time" id="time" name="time" class="form-control mb-1" required/>
+              <small id="error" style="color:red;font-weight:600;"></small>
+              <select class="form-control mb-3" required>
+                <option value="">Purpose of Visit</option><option>Consultation</option><option>Follow-up</option><option>Medical Test</option><option>Treatment</option>
+              </select>
+              <button class="btn btn-success w-100 btn-modern" type="submit">Book Now</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partner Hospitals -->
+  <section class="py-5 bg-white text-dark">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-5">Our Partner <span style="color:#1976d2;">Hospitals</span></h2>
+      <div class="row g-4">
+        <div class="col-md-3 col-sm-6"><div class="card hospital-card p-3 text-center"><img src="https://via.placeholder.com/200x120" class="img-fluid rounded mb-3"/><h5 class="fw-bold">Apollo Hospitals</h5><p class="text-muted">Chennai</p></div></div>
+        <div class="col-md-3 col-sm-6"><div class="card hospital-card p-3 text-center"><img src="https://via.placeholder.com/200x120" class="img-fluid rounded mb-3"/><h5 class="fw-bold">Fortis Hospitals</h5><p class="text-muted">Bangalore</p></div></div>
+        <div class="col-md-3 col-sm-6"><div class="card hospital-card p-3 text-center"><img src="https://via.placeholder.com/200x120" class="img-fluid rounded mb-3"/><h5 class="fw-bold">AIIMS</h5><p class="text-muted">Delhi</p></div></div>
+        <div class="col-md-3 col-sm-6"><div class="card hospital-card p-3 text-center"><img src="https://via.placeholder.com/200x120" class="img-fluid rounded mb-3"/><h5 class="fw-bold">CMC</h5><p class="text-muted">Vellore</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-5 text-center text-white" style="background: linear-gradient(135deg,#0d47a1,#1976d2);">
+    <div class="container">
+      <h2 class="fw-bold mb-5">What Our Patients Say</h2>
+      <div class="row g-4">
+        <div class="col-md-4"><div class="testimonial-card"><p>"Booking was super easy! The doctors were very professional."</p><h6 class="fw-bold mt-3">- Rohan Gupta</h6></div></div>
+        <div class="col-md-4"><div class="testimonial-card"><p>"HealthCare+ saved me so much time. Instant confirmation is amazing!"</p><h6 class="fw-bold mt-3">- Neha Kapoor</h6></div></div>
+        <div class="col-md-4"><div class="testimonial-card"><p>"Best medical platform I’ve used. Very smooth experience."</p><h6 class="fw-bold mt-3">- Arjun Patel</h6></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-5">
+    <div class="container">
+      <div class="p-5 text-center rounded-4 shadow-lg" style="background: linear-gradient(135deg,#1976d2,#42a5f5);color:white;">
+        <h2 class="fw-bold mb-3">Take Control of Your Health Today</h2>
+        <p class="mb-4">Book your appointment at top hospitals with ease and confidence.</p>
+        <a href="#book" class="btn btn-light btn-lg rounded-pill px-5 shadow-sm">Book Appointment</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p class="mb-0">&copy; 2025 HealthCare+. All Rights Reserved.</p>
+    <small>support@healthcare.com | +91 98765 43210</small>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  let today = new Date().toISOString().split("T")[0];
+
+  // Set today's date as default and minimum allowed
+  let dateInput = document.getElementById("date");
+  dateInput.value = today;
+  dateInput.setAttribute("min", today);
+
+  const timeInput = document.getElementById("time");
+  const errorEl = document.getElementById("error");
+
+  function validateDateTime() {
+    let dateVal = dateInput.value;
+    let timeVal = timeInput.value;
+    if (!dateVal || !timeVal) { 
+      errorEl.textContent = ""; 
+      return; 
+    }
+
+    let selectedDateTime = new Date(dateVal + "T" + timeVal);
+    let now = new Date();
+
+    if (selectedDateTime < now) {
+      errorEl.textContent = "⚠️ You cannot choose a past time.";
+    } else {
+      errorEl.textContent = "";
+    }
+  }
+
+  timeInput.addEventListener("input", validateDateTime);
+  dateInput.addEventListener("input", validateDateTime);
+
+  document.getElementById("appointmentForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    validateDateTime();
+
+    if (errorEl.textContent !== "") return;
+
+    Swal.fire({
+      icon: 'success',
+      title: '🎉 Appointment Booked!',
+      html: `<p>Your appointment is scheduled on <b>${dateInput.value}</b> at <b>${timeInput.value}</b>.</p>`,
+      confirmButtonText: 'Awesome!',
+      confirmButtonColor: '#1976d2',
+      background: '#fff',
+      color: '#333',
+      showClass: {popup: 'animate__animated animate__zoomIn'},
+      hideClass: {popup: 'animate__animated animate__fadeOutDown'}
+    }).then(() => { 
+      window.location.href = "/dashboard"; 
+    });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navLinks = document.querySelectorAll('.navbar-collapse a');
+  const navbarCollapse = document.getElementById('navbarMenu');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (navbarCollapse.classList.contains('show')) {
+        let bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+        bsCollapse.hide();
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
