@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hospital Patient Portal</title>
+    <style>
+        :root {
+            --control-height: 46px;
+            --control-padding-y: 12px;
+            --control-padding-x: 14px;
+            --control-radius: 8px;
+            --control-border: #cdd6e1;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+            background: linear-gradient(135deg, #d9faff, #b3e5fc, #90caf9);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {opacity:0; transform: translateY(20px);}
+            to   {opacity:1; transform: translateY(0);}
+        }
+
+        h2 {
+            text-align: center;
+            color: #0077b6;
+            margin: 0 0 20px;
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        label {
+            font-weight: 600;
+            margin-top: 14px;
+            display: block;
+            color: #023e8a;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: var(--control-padding-y) var(--control-padding-x);
+            margin-top: 6px;
+            border: 1px solid var(--control-border);
+            border-radius: var(--control-radius);
+            font-size: 15px;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+            background-color: #fff;
+            line-height: normal;   /* ✅ fix clipping issue */
+        }
+        input:focus, select:focus, textarea:focus{
+            border-color: #00b4d8;
+            box-shadow: 0 0 0 3px rgba(0,180,216,0.12);
+        }
+
+        /* single-line controls */
+        input[type="text"], input[type="tel"], input[type="email"], input[type="date"], select {
+            height: var(--control-height);
+        }
+
+        /* select arrow & padding */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 48px;
+            background-image:
+                url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230077b6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 14px;
+        }
+
+        option { white-space: normal; }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.35;
+        }
+
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, #0077b6, #0096c7);
+            color: white;
+            padding: 12px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.05s ease, box-shadow 0.2s ease, background 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,119,182,0.18);
+        }
+        .btn:hover { background: linear-gradient(135deg, #023e8a, #0077b6); }
+        .btn:active { transform: translateY(1px); }
+
+        .btn.small-btn {
+            width: auto;
+            display: inline-flex;
+            padding: 10px 16px;
+            font-size: 13px;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-holder {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 8px auto 20px;
+            border: 3px solid #0077b6;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f9ff;
+            transition: box-shadow 0.2s ease;
+        }
+        .profile-holder:hover {
+            box-shadow: 0 0 0 4px rgba(0,119,182,0.12) inset;
+        }
+        .profile-holder img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .profile-placeholder { font-size: 15px; font-weight: 700; color: #0077b6; text-align:center; user-select:none; }
+        .file-input input[type="file"] { display: none; }
+
+        .id-box {
+            text-align: center;
+            background: #caf0f8;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            color: #0077b6;
+            margin: 14px 0;
+        }
+        .detail p { margin: 10px 0; font-size: 15px; color: #333; line-height: 1.4; }
+
+        .row { display:flex; gap:10px; align-items:center; margin-top:6px; }
+        .row .flex-1 { flex:1; }
+        @media (max-width:600px) {
+            .container { padding: 20px; }
+            h2 { font-size: 20px; }
+            input, select, textarea { font-size: 14px; }
+            .btn { font-size: 14px; padding: 10px; }
+            .btn.small-btn { font-size: 13px; padding: 9px 12px; }
+            label { font-size: 13px; }
+            .row { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="formPage" aria-live="polite">
+    <h2>Patient Profile Setup</h2>
+
+    <div class="profile-holder" id="profileHolder" title="Click to upload photo">
+        <img id="profileImg" alt="Profile photo">
+        <span class="profile-placeholder" id="profilePlaceholder">Upload Photo</span>
+    </div>
+    <div class="file-input"><input id="photoUpload" type="file" accept="image/*"></div>
+
+    <label for="name">Full Name *</label>
+    <input id="name" type="text" required>
+
+    <label for="gender">Gender *</label>
+    <select id="gender" required>
+        <option value="">Select</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+    </select>
+
+    <label for="dob">Date of Birth *</label>
+    <input id="dob" type="date" required>
+
+    <label for="blood">Blood Group *</label>
+    <select id="blood" required>
+        <option value="">Select</option>
+        <option>A+</option><option>A-</option>
+        <option>B+</option><option>B-</option>
+        <option>O+</option><option>O-</option>
+        <option>AB+</option><option>AB-</option>
+    </select>
+
+    <label>Phone Number *</label>
+    <div class="row">
+        <div class="flex-1">
+            <input id="phone" type="tel" maxlength="10" placeholder="Enter 10-digit phone" required>
+        </div>
+        <div>
+            <button type="button" class="btn small-btn" id="sendOtpBtn">Send OTP</button>
+        </div>
+    </div>
+
+    <div class="row" id="otpRow" style="display:none;">
+        <div class="flex-1">
+            <input id="otpInput" type="text" placeholder="Enter OTP">
+        </div>
+        <div>
+            <button type="button" class="btn small-btn" id="verifyBtn">Verify OTP</button>
+        </div>
+    </div>
+
+    <p id="otpStatus" style="color:green; font-size:13px; margin-top:8px;"></p>
+
+    <label for="email">Email (Optional)</label>
+    <input id="email" type="email">
+
+    <label for="guardianName">Husband/Wife/Guardian Name *</label>
+    <input id="guardianName" type="text" required>
+
+    <label for="guardianPhone">Guardian Phone Number *</label>
+    <input id="guardianPhone" type="tel" maxlength="10" required>
+
+    <label for="city">District *</label>
+    <select id="city" required>
+        <option value="">Select</option>
+        <option>Ariyalur</option>
+        <option>Chengalpattu</option>
+        <option>Chennai</option>
+        <option>Coimbatore</option>
+        <option>Cuddalore</option>
+        <option>Dharmapuri</option>
+        <option>Dindigul</option>
+        <option>Erode</option>
+        <option>Kallakurichi</option>
+        <option>Kanchipuram</option>
+        <option>Kanyakumari</option>
+        <option>Karur</option>
+        <option>Krishnagiri</option>
+        <option>Madurai</option>
+        <option>Mayiladuthurai</option>
+        <option>Nagapattinam</option>
+        <option>Namakkal</option>
+        <option>Nilgiris</option>
+        <option>Perambalur</option>
+        <option>Pudukkottai</option>
+        <option>Ramanathapuram</option>
+        <option>Ranipet</option>
+        <option>Salem</option>
+        <option>Sivagangai</option>
+        <option>Tenkasi</option>
+        <option>Thanjavur</option>
+        <option>Theni</option>
+        <option>Thoothukudi</option>
+        <option>Tiruchirappalli</option>
+        <option>Tirunelveli</option>
+        <option>Tirupathur</option>
+        <option>Tiruppur</option>
+        <option>Tiruvallur</option>
+        <option>Tiruvannamalai</option>
+        <option>Tiruvarur</option>
+        <option>Vellore</option>
+        <option>Viluppuram</option>
+        <option>Virudhunagar</option>
+    </select>
+
+    <label for="state">State *</label>
+    <select id="state" required>
+        <option value="Tamil Nadu" selected>Tamil Nadu</option>
+    </select>
+
+    <label for="address">Address *</label>
+    <textarea id="address" required></textarea>
+
+    <button class="btn" id="submitBtn" type="button">Submit</button>
+</div>
+
+<div class="container" id="profilePage" style="display:none;">
+    <h2>Patient Profile</h2>
+    <div class="id-box" id="patientId"></div>
+    <img id="savedImg" alt="Saved profile" style="margin:10px auto; display:block; border:3px solid #0077b6; border-radius:50%; width:120px; height:120px; object-fit:cover;">
+    <div class="detail">
+        <p><b>Name:</b> <span id="savedName"></span></p>
+        <p><b>Gender:</b> <span id="savedGender"></span></p>
+        <p><b>DOB:</b> <span id="savedDob"></span></p>
+        <p><b>Blood Group:</b> <span id="savedBlood"></span></p>
+        <p><b>Phone:</b> <span id="savedPhone"></span></p>
+        <p><b>Email:</b> <span id="savedEmail"></span></p>
+        <p><b>Guardian:</b> <span id="savedGuardian"></span></p>
+        <p><b>Guardian Phone:</b> <span id="savedGuardianPhone"></span></p>
+        <p><b>District:</b> <span id="savedCity"></span></p>
+        <p><b>State:</b> <span id="savedState"></span></p>
+        <p><b>Address:</b> <span id="savedAddress"></span></p>
+    </div>
+    <button class="btn" id="editBtn" type="button">Edit Profile</button>
+</div>
+
+<script>
+    // State
+    let uploadedImage = "";
+    let generatedOTP = "";
+    let phoneVerified = false;
+
+    // helpers
+    const el = id => document.getElementById(id);
+
+    // profile image upload
+    el('profileHolder').addEventListener('click', () => el('photoUpload').click());
+    el('photoUpload').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            el('profileImg').src = ev.target.result;
+            el('profileImg').style.display = 'block';
+            uploadedImage = ev.target.result;
+            el('profilePlaceholder').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // OTP flow (demo)
+    el('sendOtpBtn').addEventListener('click', sendOTP);
+    el('verifyBtn').addEventListener('click', verifyOTP);
+
+    function sendOTP(){
+        const phone = el('phone').value.trim();
+        if(!/^\d{10}$/.test(phone)){ alert('Enter a valid 10-digit phone number!'); return; }
+        generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+        // DEMO: show OTP in alert — replace with real SMS API on production
+        alert('Your OTP is: ' + generatedOTP);
+        el('otpRow').style.display = 'flex';
+        el('otpInput').value = '';
+        el('otpStatus').textContent = 'OTP sent to ' + phone;
+        el('otpStatus').style.color = '#0a8f2e';
+        phoneVerified = false;
+        el('otpInput').focus();
+    }
+
+    function verifyOTP(){
+        const entered = el('otpInput').value.trim();
+        if(entered === generatedOTP){
+            phoneVerified = true;
+            el('otpStatus').textContent = '✅ Phone Verified';
+            el('otpStatus').style.color = 'green';
+        } else {
+            phoneVerified = false;
+            el('otpStatus').textContent = '❌ Invalid OTP';
+            el('otpStatus').style.color = 'red';
+        }
+    }
+
+    // set titles for selects/inputs so full text shows on hover (works as tooltip)
+    function setTitles(){
+        document.querySelectorAll('select, input[type="text"], input[type="tel"], input[type="email"]').forEach(node => {
+            node.title = node.value || node.placeholder || '';
+            node.addEventListener('change', (e) => e.target.title = e.target.value || e.target.placeholder || '');
+            node.addEventListener('input', (e) => e.target.title = e.target.value || e.target.placeholder || '');
+        });
+    }
+    setTitles();
+
+    // submit
+    el('submitBtn').addEventListener('click', submitProfile);
+    function generatePatientID(){
+        return "GOVHOSP" + Math.floor(Math.random() * 1e12).toString().padStart(12,'0');
+    }
+
+    function submitProfile(){
+        if(!phoneVerified){ alert('Please verify your phone number with OTP before submitting.'); return; }
+
+        const required = ['name','gender','dob','blood','phone','guardianName','guardianPhone','city','state','address'];
+        for(const id of required){
+            const v = el(id).value;
+            if(!v || v.trim() === ''){
+                alert('⚠️ Please fill all required fields.');
+                return;
+            }
+        }
+
+        // Fill confirmation page
+        el('patientId').textContent = 'Patient ID: ' + generatePatientID();
+        el('savedImg').src = uploadedImage || 'https://via.placeholder.com/120';
+        el('savedName').textContent = el('name').value;
+        el('savedGender').textContent = el('gender').value;
+        el('savedDob').textContent = el('dob').value;
+        el('savedBlood').textContent = el('blood').value;
+        el('savedPhone').textContent = el('phone').value;
+        el('savedEmail').textContent = el('email').value || 'N/A';
+        el('savedGuardian').textContent = el('guardianName').value;
+        el('savedGuardianPhone').textContent = el('guardianPhone').value;
+        el('savedCity').textContent = el('city').value;
+        el('savedState').textContent = el('state').value;
+        el('savedAddress').textContent = el('address').value;
+
+        // show confirmation
+        el('formPage').style.display = 'none';
+        el('profilePage').style.display = 'block';
+        // update titles on confirmation view if needed
+    }
+
+    // edit button
+    el('editBtn').addEventListener('click', () => {
+        el('profilePage').style.display = 'none';
+        el('formPage').style.display = 'block';
+    });
+
+    // ensure select/title reflect initial values (when user loads page and picks)
+    document.querySelectorAll('select').forEach(s => {
+        s.addEventListener('change', e => e.target.title = e.target.value);
+        s.title = s.value || '';
+    });
+</script>
+</body>
+</html>
