@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Queue Status</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg, #e8f5e9, #a5d6a7); /* Mint to Emerald */
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; margin: 0;
+    }
+    .container {
+      background: #ffffff;
+      padding: 30px; border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      width: 450px; text-align: center;
+    }
+    h1 { font-size: 24px; color: #2e7d32; margin-bottom: 18px; }
+
+    table {
+      width: 100%; border-collapse: collapse; margin: 12px 0;
+    }
+    td {
+      padding: 8px; text-align: left; font-size: 15px; color: #333;
+    }
+    td.label { font-weight: bold; color: #1b5e20; width: 50%; }
+
+    .waiting-time { color: #c62828; font-weight: bold; margin-top: 12px; }
+    .progress-bar-container { background: #e0e0e0; border-radius: 12px; height: 18px; margin: 15px 0; overflow: hidden; }
+    .progress-bar { background: linear-gradient(90deg, #66bb6a, #2e7d32); height: 100%; width: 0%; transition: width 0.5s; }
+
+    .button {
+      background: linear-gradient(90deg, #81c784, #388e3c);
+      border: none; padding: 10px 18px; border-radius: 8px;
+      color: white; cursor: pointer; margin: 8px 5px; font-size: 15px;
+    }
+    .button:hover { background: linear-gradient(90deg, #66bb6a, #2e7d32); transform: scale(1.05); }
+
+    input {
+      padding: 10px; width: 70%; margin-top: 12px;
+      border: 1px solid #bbb; border-radius: 8px; font-size: 15px;
+    }
+    input:focus { border-color: #4caf50; box-shadow: 0 0 6px rgba(76, 175, 80, 0.6); }
+
+    #doctor-status { margin-top: 12px; font-weight: 500; color: #444; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Patient Queue Status</h1>
+    <div id="patient-info" class="info">Enter your Patient ID</div>
+    <p class="waiting-time" id="approx-time"></p>
+    <div class="progress-bar-container"><div id="progress" class="progress-bar"></div></div>
+    <p id="doctor-status"></p>
+    <input type="text" id="search-patient-id" placeholder="Enter Patient ID (P100-P150)" />
+    <br>
+    <button class="button" id="search-btn">Search</button>
+    <button class="button" id="refresh-btn">Refresh</button>
+  </div>
+
+  <script>
+    // Generate 50 patients (P100 - P150) with random consultation times (60s - 180s)
+    let allPatients = [];
+    for (let i = 100; i <= 150; i++) {
+      allPatients.push({ id: "P" + i, consultation_time: (Math.floor(Math.random() * 3) + 1) * 60 });
+    }
+
+    let queue = [...allPatients];
+    let selectedPatientID = null;
+    let currentPatientTime = queue[0].consultation_time;
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60), s = sec % 60;
+      return `${m}m ${s}s`;
+    }
+
+    function calculateWaitingTime(id) {
+      const idx = queue.findIndex(p => p.id === id);
+      if (idx === -1) return null;
+      const wait = queue.slice(0, idx).reduce((a, p) => a + p.consultation_time, 0);
+      return { position: idx + 1, waitingTime: wait, patientsBefore: idx };
+    }
+
+    function updatePatientInfo(id) {
+      const res = calculateWaitingTime(id),
+            pb = document.getElementById("progress"),
+            info = document.getElementById("patient-info");
+      const total = allPatients.length, done = total - queue.length;
+
+      if (res) {
+        const prog = ((done + res.patientsBefore) / total) * 100;
+        info.innerHTML =
+          `<table>
+             <tr><td class="label">Patient ID:</td><td>${id}</td></tr>
+             <tr><td class="label">Position:</td><td>${res.position}</td></tr>
+             <tr><td class="label">Patients Before You:</td><td>${res.patientsBefore}</td></tr>
+           </table>`;
+        document.getElementById("approx-time").innerText =
+          `Estimated Waiting Time: ${formatTime(res.waitingTime)}`;
+        pb.style.width = `${prog}%`;
+      } else {
+        info.innerHTML =
+          `<table>
+             <tr><td class="label">Patient ID:</td><td>${id}</td></tr>
+             <tr><td class="label">Status:</td><td>Completed ✅</td></tr>
+           </table>`;
+        document.getElementById("approx-time").innerText = "Estimated Waiting Time: 0m 0s";
+        pb.style.width = "100%";
+      }
+    }
+
+    // Queue update every second
+    setInterval(() => {
+      if (queue.length > 0) {
+        if (currentPatientTime > 0) {
+          currentPatientTime--;
+          document.getElementById("doctor-status").innerText =
+            `Doctor is attending (Remaining: ${formatTime(currentPatientTime)})`;
+        } else {
+          queue.shift();
+          if (queue.length > 0) {
+            currentPatientTime = queue[0].consultation_time;
+          }
+        }
+        if (selectedPatientID) updatePatientInfo(selectedPatientID);
+      } else {
+        document.getElementById("doctor-status").innerText = "All patients are done.";
+      }
+    }, 1000);
+
+    // Search button
+    document.getElementById("search-btn").addEventListener("click", () => {
+      const id = document.getElementById("search-patient-id").value.trim().toUpperCase();
+      if (allPatients.find(p => p.id === id)) {
+        selectedPatientID = id;
+        updatePatientInfo(id);
+      } else {
+        alert("Invalid Patient ID. Enter between P100 and P150");
+      }
+    });
+
+    // Refresh button (clear input & reset display)
+    document.getElementById("refresh-btn").addEventListener("click", () => {
+      selectedPatientID = null;
+      document.getElementById("search-patient-id").value = "";
+      document.getElementById("patient-info").innerText = "Enter your Patient ID";
+      document.getElementById("approx-time").innerText = "";
+      document.getElementById("progress").style.width = "0%";
+    });
+  </script>
+</body>
+</html>
