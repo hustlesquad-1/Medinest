@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Consulting</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0f4f8;
+  }
+
+  .search-bar input {
+    border-radius: 25px;
+    padding: 12px 20px;
+    width: 100%;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+  }
+
+  .doctor-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .doctor-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .doctor-card img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #1a73e8;
+  }
+
+  .doctor-info h5 {
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  .doctor-info p {
+    margin: 3px 0;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .doctor-fee {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a73e8;
+    margin-top: 5px;
+  }
+
+  .date-picker, .time-slots {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+
+  .date-picker button, .time-slots button {
+    min-width: 70px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+    white-space: nowrap;
+  }
+
+  .date-picker button.selected, .time-slots button.selected {
+    background-color: #1a73e8;
+    color: #fff;
+    border-color: #1a73e8;
+  }
+
+  .time-slots {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .btn-consult {
+    background-color: #1a73e8;
+    color: #fff;
+    border-radius: 25px;
+    padding: 12px 25px;
+    font-weight: 500;
+    border: none;
+    width: 100%;
+  }
+
+  .btn-consult:hover {
+    background-color: #1666c1;
+  }
+
+  .fee-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  }
+
+  @media (max-width: 768px) {
+    .doctor-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container my-4">
+  <div class="search-bar mb-4">
+    <input type="text" placeholder="Search Doctors, Specialties...">
+  </div>
+
+  <!-- Doctor Card -->
+  <div class="doctor-card">
+    <div class="doctor-header">
+      <img src="https://via.placeholder.com/90" alt="Doctor Photo">
+      <div class="doctor-info">
+        <h5>Dr. Meenakshi Venugopalan</h5>
+        <p>ENT Specialist | MBBS, DLO | 14 Years</p>
+        <p class="doctor-fee">₹700</p>
+      </div>
+    </div>
+
+    <!-- Date Selection -->
+    <div class="date-picker mb-2" id="datePicker">
+      <button class="selected">Tue 19 Aug</button>
+      <button>Wed 20 Aug</button>
+      <button>Thu 21 Aug</button>
+      <button>Fri 22 Aug</button>
+      <button>Sat 23 Aug</button>
+      <button>Sun 24 Aug</button>
+      <button>Mon 25 Aug</button>
+    </div>
+
+    <!-- Time Slots -->
+    <div class="time-slots" id="timeSlots">
+      <button class="selected">10:00 AM</button>
+      <button>10:10 AM</button>
+      <button>10:20 AM</button>
+      <button>10:30 AM</button>
+      <button>10:40 AM</button>
+      <button>10:50 AM</button>
+      <button>11:00 AM</button>
+      <button>11:10 AM</button>
+      <button>11:20 AM</button>
+      <button>11:30 AM</button>
+      <button>11:40 AM</button>
+      <button>11:50 AM</button>
+    </div>
+
+    <div class="fee-bar">
+      <span>₹700 - Pay at Clinic</span>
+      <button class="btn-consult">Continue</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Date selection
+  const dateButtons = document.querySelectorAll('#datePicker button');
+  dateButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      dateButtons.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+
+  // Time selection
+  const timeButtons = document.querySelectorAll('#timeSlots button');
+  timeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      timeButtons.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+</script>
+
+</body>
+</html>
