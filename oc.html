@@ -1,202 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Online Consulting</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f0f4f8;
-  }
-
-  .search-bar input {
-    border-radius: 25px;
-    padding: 12px 20px;
-    width: 100%;
-    border: 1px solid #ccc;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-  }
-
-  .doctor-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .doctor-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .doctor-card img {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #1a73e8;
-  }
-
-  .doctor-info h5 {
-    margin-bottom: 5px;
-    font-weight: 600;
-    font-size: 18px;
-  }
-
-  .doctor-info p {
-    margin: 3px 0;
-    color: #555;
-    font-size: 14px;
-  }
-
-  .doctor-fee {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1a73e8;
-    margin-top: 5px;
-  }
-
-  .date-picker, .time-slots {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-  }
-
-  .date-picker button, .time-slots button {
-    min-width: 70px;
-    padding: 8px 10px;
-    border-radius: 12px;
-    border: 1px solid #ccc;
-    background: #fff;
-    cursor: pointer;
-    font-size: 14px;
-    transition: 0.2s;
-    white-space: nowrap;
-  }
-
-  .date-picker button.selected, .time-slots button.selected {
-    background-color: #1a73e8;
-    color: #fff;
-    border-color: #1a73e8;
-  }
-
-  .time-slots {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .btn-consult {
-    background-color: #1a73e8;
-    color: #fff;
-    border-radius: 25px;
-    padding: 12px 25px;
-    font-weight: 500;
-    border: none;
-    width: 100%;
-  }
-
-  .btn-consult:hover {
-    background-color: #1666c1;
-  }
-
-  .fee-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fff;
-    padding: 12px 20px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  }
-
-  @media (max-width: 768px) {
-    .doctor-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medinest - Appointment Booking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .slot { cursor:pointer; border:1px solid #CBD5E0; border-radius:0.5rem; padding:0.5rem 1rem; transition:all 0.3s; }
+    .slot.selected { background-color:#4F46E5; color:white; border-color:#4F46E5; }
+    .fade-slide-enter-active { opacity: 1; transform: translateY(0); transition: all 0.5s ease; }
+    .modal-bg { background: rgba(0,0,0,0.6); }
+  </style>
 </head>
-<body>
+<body class="bg-gradient-to-b from-purple-50 to-white min-h-screen flex flex-col items-center">
 
-<div class="container my-4">
-  <div class="search-bar mb-4">
-    <input type="text" placeholder="Search Doctors, Specialties...">
-  </div>
+  <!-- HEADER -->
+  <header class="bg-white shadow-md w-full p-4 flex justify-between items-center sticky top-0 z-10">
+    <h1 class="text-2xl font-bold text-purple-600">Medinest</h1>
+    <button class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+      <i data-lucide="search" class="w-6 h-6 text-gray-600"></i>
+    </button>
+  </header>
 
-  <!-- Doctor Card -->
-  <div class="doctor-card">
-    <div class="doctor-header">
-      <img src="https://via.placeholder.com/90" alt="Doctor Photo">
-      <div class="doctor-info">
-        <h5>Dr. Meenakshi Venugopalan</h5>
-        <p>ENT Specialist | MBBS, DLO | 14 Years</p>
-        <p class="doctor-fee">₹700</p>
+  <main class="flex-grow w-full p-4 flex flex-col items-center space-y-8">
+
+    <!-- Patient ID Section -->
+    <section id="patient-id-section" class="flex flex-col items-center gap-6 w-full max-w-md fade-slide-enter-active">
+      <img src="https://img.icons8.com/clouds/200/patient.png" alt="Patient Illustration" class="w-48 h-48 animate-bounce">
+      <h2 class="text-2xl font-bold text-gray-800 text-center">Enter Your Patient ID</h2>
+      <input type="text" id="patientId" placeholder="Patient ID" class="w-full border rounded-2xl p-4 shadow focus:outline-none focus:ring-2 focus:ring-purple-500">
+      <button onclick="goToConsultation()" class="w-full bg-purple-600 text-white rounded-2xl p-4 font-semibold hover:bg-purple-700 shadow-lg transition transform hover:scale-105">Continue</button>
+      <p class="text-sm text-gray-500 text-center">Don't have an ID? <a href="#" class="text-purple-600 font-medium">Register here</a></p>
+    </section>
+
+    <!-- Consultation Type Section -->
+    <section id="consultation-section" class="hidden flex flex-col items-center gap-6 w-full max-w-3xl fade-slide-enter-active">
+      <h2 class="text-2xl font-bold text-gray-800 text-center">Choose Consultation Type</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+        <button onclick="selectConsultation('inperson')" class="border p-6 rounded-2xl hover:shadow-2xl hover:scale-105 transition-all text-left bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+          <h3 class="text-lg font-bold mb-2">In-Person (₹10)</h3>
+          <p>Visit a hospital near you</p>
+        </button>
+        <button onclick="selectConsultation('online')" class="border p-6 rounded-2xl hover:shadow-2xl hover:scale-105 transition-all text-left bg-gradient-to-r from-green-500 to-teal-500 text-white">
+          <h3 class="text-lg font-bold mb-2">Online</h3>
+          <p>Consult with specialists via video call</p>
+        </button>
       </div>
-    </div>
+    </section>
 
-    <!-- Date Selection -->
-    <div class="date-picker mb-2" id="datePicker">
-      <button class="selected">Tue 19 Aug</button>
-      <button>Wed 20 Aug</button>
-      <button>Thu 21 Aug</button>
-      <button>Fri 22 Aug</button>
-      <button>Sat 23 Aug</button>
-      <button>Sun 24 Aug</button>
-      <button>Mon 25 Aug</button>
-    </div>
+    <!-- In-Person Appointment -->
+    <section id="inperson-section" class="hidden flex flex-col items-center gap-6 w-full max-w-2xl fade-slide-enter-active">
+      <h2 class="text-2xl font-bold text-gray-800 text-center">In-Person Appointment</h2>
+      <select class="w-full border rounded-2xl p-4">
+        <option>Select City</option>
+        <option>Chennai</option>
+        <option>Delhi</option>
+      </select>
+      <select class="w-full border rounded-2xl p-4">
+        <option>Select Hospital</option>
+        <option>Govt. Hospital A</option>
+      </select>
+      <select class="w-full border rounded-2xl p-4">
+        <option>Select Department</option>
+        <option>Cardiology</option>
+      </select>
+      <select class="w-full border rounded-2xl p-4">
+        <option>Purpose of Visit</option>
+        <option>Consultation</option>
+        <option>Follow-up</option>
+        <option>Lab Test</option>
+      </select>
+      <div class="flex flex-col sm:flex-row w-full gap-4">
+        <input type="date" class="w-full border rounded-2xl p-4" />
+        <input type="time" class="w-full border rounded-2xl p-4" />
+      </div>
+      <button onclick="showModal('Appointment booked successfully!')" class="bg-purple-600 text-white rounded-2xl px-6 py-3 font-semibold hover:bg-purple-700 shadow-lg transition transform hover:scale-105">Confirm & Pay</button>
+    </section>
 
-    <!-- Time Slots -->
-    <div class="time-slots" id="timeSlots">
-      <button class="selected">10:00 AM</button>
-      <button>10:10 AM</button>
-      <button>10:20 AM</button>
-      <button>10:30 AM</button>
-      <button>10:40 AM</button>
-      <button>10:50 AM</button>
-      <button>11:00 AM</button>
-      <button>11:10 AM</button>
-      <button>11:20 AM</button>
-      <button>11:30 AM</button>
-      <button>11:40 AM</button>
-      <button>11:50 AM</button>
-    </div>
+    <!-- Online Appointment -->
+    <section id="online-section" class="hidden flex flex-col items-center gap-6 w-full max-w-2xl fade-slide-enter-active">
+      <h2 class="text-2xl font-bold text-gray-800 text-center">Online Appointment</h2>
+      <select id="online-department" class="w-full border rounded-2xl p-4" onchange="showDoctors(this.value)">
+        <option>Select Department</option>
+        <option>ENT</option>
+        <option>Cardiology</option>
+        <option>Dermatology</option>
+      </select>
+      <div id="doctor-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full mt-4"></div>
+      
+      <div id="online-datetime" class="hidden flex flex-col sm:flex-row w-full gap-4 mt-4">
+        <div class="flex-1">
+          <h4 class="font-semibold mb-2">Select Date</h4>
+          <input type="date" class="w-full border rounded-2xl p-4" />
+        </div>
+        <div class="flex-1">
+          <h4 class="font-semibold mb-2">Select Time</h4>
+          <div class="grid grid-cols-3 gap-2" id="time-slots"></div>
+        </div>
+      </div>
+      <button id="online-confirm" onclick="showModal('Appointment booked successfully!')" class="hidden bg-teal-600 text-white rounded-2xl px-6 py-3 font-semibold hover:bg-teal-700 shadow-lg transition transform hover:scale-105 mt-4">Confirm & Pay</button>
+    </section>
 
-    <div class="fee-bar">
-      <span>₹700 - Pay at Clinic</span>
-      <button class="btn-consult">Continue</button>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="hidden fixed inset-0 flex items-center justify-center modal-bg z-50">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center animate-fade-in">
+      <i data-lucide="check-circle" class="w-16 h-16 text-purple-600 mx-auto mb-4"></i>
+      <h3 id="modal-message" class="text-xl font-bold text-gray-800 mb-4"></h3>
+      <button onclick="closeModal()" class="bg-purple-600 text-white rounded-xl px-6 py-3 font-semibold hover:bg-purple-700 shadow-lg transition">Done</button>
     </div>
   </div>
-</div>
 
-<script>
-  // Date selection
-  const dateButtons = document.querySelectorAll('#datePicker button');
-  dateButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      dateButtons.forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-    });
-  });
+  <script>
+    lucide.createIcons();
 
-  // Time selection
-  const timeButtons = document.querySelectorAll('#timeSlots button');
-  timeButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      timeButtons.forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-    });
-  });
-</script>
+    const doctors = {
+      ENT: [
+        { name: "Dr. Meenakshi Venugopalan", exp: "14 Years", rating: "⭐ 4.5/5", photo: "https://randomuser.me/api/portraits/women/44.jpg", fee: "₹700" },
+        { name: "Dr. Rahul Sharma", exp: "10 Years", rating: "⭐ 4.3/5", photo: "https://randomuser.me/api/portraits/men/32.jpg", fee: "₹650" }
+      ],
+      Cardiology: [
+        { name: "Dr. Anjali Mehta", exp: "12 Years", rating: "⭐ 4.6/5", photo: "https://randomuser.me/api/portraits/women/45.jpg", fee: "₹800" }
+      ],
+      Dermatology: [
+        { name: "Dr. Karan Singh", exp: "8 Years", rating: "⭐ 4.2/5", photo: "https://randomuser.me/api/portraits/men/33.jpg", fee: "₹600" }
+      ]
+    };
 
+    const timeSlots = ["08:00 AM","08:10 AM","08:20 AM","08:30 AM","08:40 AM","08:50 AM","09:00 AM","09:10 AM","09:20 AM","09:30 AM"];
+
+    function goToConsultation() {
+      const pid = document.getElementById('patientId').value.trim();
+      if (!pid) { alert('Enter a valid Patient ID'); return; }
+      document.getElementById('patient-id-section').classList.add('hidden');
+      document.getElementById('consultation-section').classList.remove('hidden');
+    }
+
+    function selectConsultation(type) {
+      document.getElementById('consultation-section').classList.add('hidden');
+      if(type==='inperson'){
+        document.getElementById('inperson-section').classList.remove('hidden');
+      } else {
+        document.getElementById('online-section').classList.remove('hidden');
+      }
+    }
+
+    function showDoctors(dept){
+      const list = document.getElementById('doctor-list');
+      list.innerHTML = '';
+      if(!dept || !doctors[dept]) return;
+      doctors[dept].forEach(doc => {
+        const card = document.createElement('div');
+        card.className = 'bg-white shadow-md rounded-2xl p-4 flex items-center gap-4 hover:shadow-2xl cursor-pointer transition';
+        card.innerHTML = `
+          <img src="${doc.photo}" alt="${doc.name}" class="w-16 h-16 rounded-full">
+          <div class="flex-1">
+            <h3 class="font-bold text-gray-800">${doc.name}</h3>
+            <p class="text-sm text-gray-600">${doc.exp} | ${doc.rating}</p>
+          </div>
+          <p class="font-semibold text-purple-600">${doc.fee}</p>
+        `;
+        card.onclick = () => {
+          document.getElementById('online-datetime').classList.remove('hidden');
+          document.getElementById('online-confirm').classList.remove('hidden');
+          const slotsDiv = document.getElementById('time-slots');
+          slotsDiv.innerHTML = '';
+          timeSlots.forEach(slot=>{
+            const slotBtn = document.createElement('div');
+            slotBtn.className='slot';
+            slotBtn.innerText=slot;
+            slotBtn.onclick = () => {
+              Array.from(slotsDiv.children).forEach(s=>s.classList.remove('selected'));
+              slotBtn.classList.add('selected');
+            }
+            slotsDiv.appendChild(slotBtn);
+          });
+        };
+        list.appendChild(card);
+      });
+    }
+
+    function showModal(message){
+      document.getElementById('modal-message').innerText = message;
+      document.getElementById('modal').classList.remove('hidden');
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    }
+
+    function closeModal(){
+      document.getElementById('modal').classList.add('hidden');
+      location.reload();
+    }
+  </script>
 </body>
 </html>
