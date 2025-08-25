@@ -61,6 +61,58 @@ app.get("/api/appointments", async (req, res) => {
   }
 });
 
+// ✅ POST route → insert OPD data
+app.post("/api/opd", async (req, res) => {
+  try {
+    const {
+      patientID,
+      heartbeatRate,
+      temperature,
+      sugarLevel,
+      bloodPressure,
+      spo2,
+      weight,
+      height,
+      previousHistory,
+    } = req.body;
+
+    const query = `
+      INSERT INTO opd_details 
+      (patient_id, heartbeat_rate, temperature, sugar_level, blood_pressure, spo2, weight, height, previous_history)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id
+    `;
+
+    const values = [
+      patientID,
+      heartbeatRate,
+      temperature,
+      sugarLevel,
+      bloodPressure,
+      spo2,
+      weight,
+      height,
+      previousHistory,
+    ];
+
+    const result = await pool.query(query, values);
+
+    res.json({ ok: true, id: result.rows[0].id });
+  } catch (error) {
+    console.error("❌ Database insert error:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+// ✅ GET route → fetch all OPD records
+app.get("/api/opd", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM opd_details ORDER BY id DESC");
+    res.json(result.rows);
+  } catch (error) {
+    console.error("❌ Database fetch error:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
 
 // Root route
 app.get("/", (req, res) => {
