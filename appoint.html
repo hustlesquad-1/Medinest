@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Appointments</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f4f4f4; }
+    .btn { padding: 8px 12px; margin-top: 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>📋 All Appointments</h1>
+
+  <button onclick="loadAppointments()" class="btn">Load Appointments</button>
+
+  <table id="appointmentsTable">
+    <<thead>
+  <tr>
+    <th>Patient ID</th>
+    <th>Department</th>
+    <th>Doctor</th>
+    <th>Date</th>
+    <th>Time</th>
+  </tr>
+</thead>
+<tbody></tbody>
+  </table>
+
+  <script>
+    const API_URL = "http://localhost:5000";
+
+    async function loadAppointments() {
+      try {
+        const res = await fetch(`${API_URL}/api/appointments`);
+        const appointments = await res.json();
+
+        const tbody = document.querySelector("#appointmentsTable tbody");
+        tbody.innerHTML = "";
+
+        appointments.forEach(app => {
+          const row = `<tr>
+            <td>${app.id}</td>
+            <td>${app.department}</td>
+            <td>${app.doctor}</td>
+            <td>${app.date}</td>
+            <td>${app.time}</td>
+            </tr>`;
+          tbody.innerHTML += row;
+        });
+      } catch (error) {
+        alert("❌ Failed to load appointments. Check backend.");
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
