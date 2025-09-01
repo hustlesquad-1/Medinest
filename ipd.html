@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPD - In-Patient Day Details</title>
+
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #e6f0ff, #cce0ff);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            width: 85%;
+            max-width: 1100px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #004080;
+            font-size: 26px;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        label {
+            font-weight: bold;
+            color: #003366;
+        }
+        
+        input,
+        textarea,
+        select {
+            padding: 8px;
+            border: 1px solid #99bbff;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        input:focus,
+        textarea:focus {
+            border-color: #004080;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 64, 128, 0.3);
+        }
+        
+        .drug-box {
+            margin-top: 20px;
+            border: 2px solid #99bbff;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f2f7ff;
+        }
+        
+        .drug-box h3 {
+            color: #004080;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        th,
+        td {
+            border: 1px solid #99bbff;
+            padding: 8px;
+        }
+        
+        th {
+            background: #004080;
+            color: white;
+        }
+        
+        td input[type="checkbox"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+        
+        .btn {
+            margin-top: 15px;
+            padding: 10px 16px;
+            background: #004080;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #00264d;
+        }
+        
+        .submit-btn {
+            margin-top: 20px;
+            padding: 12px;
+            background: #004080;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .submit-btn:hover {
+            background: #00264d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>In-Patient (IPD) Day-by-Day Details</h1>
+        </header>
+        <form>
+            <!-- Patient ID -->
+            <label for="patient-ID">Patient-ID:</label>
+            <input type="number" id="patient-ID" name="patient-ID" required>
+
+            <!-- Admission Date -->
+            <label for="admissionDate">Admission Date:</label>
+            <input type="text" id="admissionDate" name="admissionDate" placeholder="Select Admission Date" required>
+
+            <!-- Entry Date -->
+            <label for="entryDate">Entry Date:</label>
+            <input type="text" id="entryDate" name="entryDate" readonly>
+
+            <!-- Vital Details -->
+            <label for="heartbeatRate">Heartbeat Rate (bpm):</label>
+            <input type="number" id="heartbeatRate" name="heartbeatRate" required>
+
+            <label for="temperature">Temperature (°C):</label>
+            <input type="number" id="temperature" name="temperature" step="0.1" required>
+
+            <label for="sugarLevel">Sugar Level (mg/dL):</label>
+            <input type="number" id="sugarLevel" name="sugarLevel" required>
+
+            <label for="bloodPressure">Blood Pressure (mmHg):</label>
+            <input type="text" id="bloodPressure" name="bloodPressure" placeholder="e.g., 120/80" required>
+
+            <label for="spo2">SpO2 Level (%):</label>
+            <input type="number" id="spo2" name="spo2" max="100" min="0" required>
+
+            <!-- Diagnosis & Treatment -->
+            <label for="dayDiagnosis">Day’s Diagnosis:</label>
+            <textarea id="dayDiagnosis" name="dayDiagnosis" required></textarea>
+
+            <label for="dayTreatment">Day’s Treatment:</label>
+            <textarea id="dayTreatment" name="dayTreatment" required></textarea>
+
+            <label for="procedures">Procedures Ordered:</label>
+            <textarea id="procedures" name="procedures"></textarea>
+
+            <!-- Prescription Table -->
+            <div class="drug-box">
+                <h3>Prescription Details</h3>
+                <table id="drugTable">
+                    <tr>
+                        <th>Drug Name</th>
+                        <th>Quantity</th>
+                        <th>Morning</th>
+                        <th>Afternoon</th>
+                        <th>Evening</th>
+                        <th>Night</th>
+                        <th>Injection</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="drugName"></td>
+                        <td><input type="number" class="quantity" min="1" max="4" value="1"></td>
+                        <td><input type="checkbox" class="dose"></td>
+                        <td><input type="checkbox" class="dose"></td>
+                        <td><input type="checkbox" class="dose"></td>
+                        <td><input type="checkbox" class="dose"></td>
+                        <td><input type="text" placeholder="Injection details"></td>
+                    </tr>
+                </table>
+                <button type="button" class="btn" onclick="addDrugRow()">+ Add Another Drug</button>
+            </div>
+
+            <!-- Submit -->
+            <input type="submit" class="submit-btn" value="Submit">
+        </form>
+    </div>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // Admission Date Calendar
+        flatpickr("#admissionDate", {
+            dateFormat: "Y-m-d",
+            allowInput: false,
+            altInput: true,
+            altFormat: "d M Y",
+            defaultDate: new Date()
+        });
+
+        // Entry Date = today (readonly)
+        flatpickr("#entryDate", {
+            dateFormat: "Y-m-d",
+            defaultDate: new Date(),
+            clickOpens: false // prevent user editing
+        });
+
+        // Function to limit checkboxes according to Quantity
+        function limitCheckboxes(row) {
+            let qty = row.querySelector(".quantity").value;
+            let checkboxes = row.querySelectorAll(".dose");
+            let checked = row.querySelectorAll(".dose:checked").length;
+
+            checkboxes.forEach(box => {
+                if (!box.checked && checked >= qty) {
+                    box.disabled = true;
+                } else {
+                    box.disabled = false;
+                }
+            });
+        }
+
+        // Add row for more drugs
+        function addDrugRow() {
+            let table = document.getElementById("drugTable");
+            let newRow = table.insertRow(-1);
+
+            newRow.innerHTML = `
+        <td><input type="text" name="drugName"></td>
+        <td><input type="number" class="quantity" min="1" max="4" value="1"></td>
+        <td><input type="checkbox" class="dose"></td>
+        <td><input type="checkbox" class="dose"></td>
+        <td><input type="checkbox" class="dose"></td>
+        <td><input type="checkbox" class="dose"></td>
+        <td><input type="text" placeholder="Injection details"></td>
+      `;
+
+            // Attach listeners
+            let qtyInput = newRow.querySelector(".quantity");
+            let checkboxes = newRow.querySelectorAll(".dose");
+
+            qtyInput.addEventListener("input", () => limitCheckboxes(newRow));
+            checkboxes.forEach(box => box.addEventListener("change", () => limitCheckboxes(newRow)));
+        }
+
+        // Attach listeners to first row
+        let firstRow = document.querySelector("#drugTable tr:nth-child(2)");
+        let qtyInput = firstRow.querySelector(".quantity");
+        let checkboxes = firstRow.querySelectorAll(".dose");
+
+        qtyInput.addEventListener("input", () => limitCheckboxes(firstRow));
+        checkboxes.forEach(box => box.addEventListener("change", () => limitCheckboxes(firstRow)));
+    </script>
+</body>
+
+</html>
