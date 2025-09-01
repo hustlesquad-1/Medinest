@@ -11,71 +11,85 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #e6f0ff, #cce0ff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
             margin: 0;
             padding: 0;
         }
         
         .container {
-            width: 85%;
-            max-width: 1100px;
+            width: 90%;
+            max-width: 1150px;
             margin: 20px auto;
             background: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         h1 {
-            color: #004080;
-            font-size: 26px;
+            color: #0d47a1;
+            font-size: 30px;
+            font-weight: 700;
         }
         
         form {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
         
         label {
-            font-weight: bold;
-            color: #003366;
+            font-weight: 600;
+            color: #0d47a1;
         }
         
         input,
         textarea,
         select {
-            padding: 8px;
-            border: 1px solid #99bbff;
-            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
             width: 100%;
             box-sizing: border-box;
+            font-size: 14px;
         }
         
         input:focus,
         textarea:focus {
-            border-color: #004080;
+            border-color: #1565c0;
             outline: none;
-            box-shadow: 0 0 5px rgba(0, 64, 128, 0.3);
+            box-shadow: 0 0 6px rgba(21, 101, 192, 0.4);
         }
         
         .drug-box {
             margin-top: 20px;
-            border: 2px solid #99bbff;
-            padding: 15px;
-            border-radius: 10px;
-            background: #f2f7ff;
+            border: 2px solid #90caf9;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f1f8ff;
         }
         
         .drug-box h3 {
-            color: #004080;
-            margin-bottom: 10px;
+            color: #0d47a1;
+            margin-bottom: 12px;
             text-align: center;
         }
         
@@ -88,13 +102,18 @@
         
         th,
         td {
-            border: 1px solid #99bbff;
+            border: 1px solid #90caf9;
             padding: 8px;
+            font-size: 14px;
         }
         
         th {
-            background: #004080;
+            background: #1565c0;
             color: white;
+        }
+        
+        td input {
+            width: 95%;
         }
         
         td input[type="checkbox"] {
@@ -105,7 +124,7 @@
         .btn {
             margin-top: 15px;
             padding: 10px 16px;
-            background: #004080;
+            background: #1565c0;
             color: white;
             font-size: 14px;
             font-weight: bold;
@@ -116,23 +135,83 @@
         }
         
         .btn:hover {
-            background: #00264d;
+            background: #0d47a1;
         }
         
         .submit-btn {
             margin-top: 20px;
-            padding: 12px;
-            background: #004080;
+            padding: 14px;
+            background: #1565c0;
             color: white;
             font-size: 16px;
             font-weight: bold;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
+            transition: background 0.3s;
         }
         
         .submit-btn:hover {
-            background: #00264d;
+            background: #0d47a1;
+        }
+        /* Modern Popup */
+        
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .popup {
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: popIn 0.4s ease;
+        }
+        
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .popup h2 {
+            color: #0d47a1;
+            margin-bottom: 10px;
+        }
+        
+        .popup p {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .popup button {
+            background: #1565c0;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .popup button:hover {
+            background: #0d47a1;
         }
     </style>
 </head>
@@ -142,7 +221,7 @@
         <header>
             <h1>In-Patient (IPD) Day-by-Day Details</h1>
         </header>
-        <form>
+        <form id="ipdForm">
             <!-- Patient ID -->
             <label for="patient-ID">Patient-ID:</label>
             <input type="number" id="patient-ID" name="patient-ID" required>
@@ -193,6 +272,7 @@
                         <th>Evening</th>
                         <th>Night</th>
                         <th>Injection</th>
+                        <th>Dose (ml)</th>
                     </tr>
                     <tr>
                         <td><input type="text" name="drugName"></td>
@@ -202,6 +282,7 @@
                         <td><input type="checkbox" class="dose"></td>
                         <td><input type="checkbox" class="dose"></td>
                         <td><input type="text" placeholder="Injection details"></td>
+                        <td><input type="number" placeholder="ml"></td>
                     </tr>
                 </table>
                 <button type="button" class="btn" onclick="addDrugRow()">+ Add Another Drug</button>
@@ -210,6 +291,15 @@
             <!-- Submit -->
             <input type="submit" class="submit-btn" value="Submit">
         </form>
+    </div>
+
+    <!-- Popup Confirmation -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup">
+            <h2>✅ Submission Successful</h2>
+            <p>Your IPD details have been recorded successfully.</p>
+            <button onclick="closePopup()">OK</button>
+        </div>
     </div>
 
     <!-- Flatpickr JS -->
@@ -229,7 +319,7 @@
         flatpickr("#entryDate", {
             dateFormat: "Y-m-d",
             defaultDate: new Date(),
-            clickOpens: false // prevent user editing
+            clickOpens: false
         });
 
         // Function to limit checkboxes according to Quantity
@@ -260,6 +350,7 @@
         <td><input type="checkbox" class="dose"></td>
         <td><input type="checkbox" class="dose"></td>
         <td><input type="text" placeholder="Injection details"></td>
+        <td><input type="number" placeholder="ml"></td>
       `;
 
             // Attach listeners
@@ -277,6 +368,17 @@
 
         qtyInput.addEventListener("input", () => limitCheckboxes(firstRow));
         checkboxes.forEach(box => box.addEventListener("change", () => limitCheckboxes(firstRow)));
+
+        // Form submit -> show popup
+        document.getElementById("ipdForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            document.getElementById("popupOverlay").style.display = "flex";
+        });
+
+        function closePopup() {
+            document.getElementById("popupOverlay").style.display = "none";
+            document.getElementById("ipdForm").reset();
+        }
     </script>
 </body>
 
