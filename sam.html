@@ -14,6 +14,162 @@
       ring-color: #7c3aed;
       border-color: #7c3aed;
     }
+    .mandatory {
+      color: red;
+      margin-left: 0.15rem;
+    }
+    /* Flip card styling */
+    .flip-card {
+      background-color: transparent;
+      width: 360px;
+      height: 220px;
+      perspective: 1000px;
+      margin: 1rem auto;
+      position: relative;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: left;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      background: white;
+      user-select: none;
+    }
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 260px;
+      border-radius: 12px;
+      backface-visibility: hidden;
+      padding: 16px 24px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      color: #222;
+      font-size: 14px;
+    }
+    .flip-card-front {
+      background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+      color: white;
+      box-shadow: 0 6px 10px rgba(124, 58, 237, 0.5);
+    }
+    .flip-card-back {
+      background: linear-gradient(135deg, #ede9fe 0%, #c7d2fe 100%);
+      color: #333;
+      transform: rotateY(180deg);
+      box-shadow: 0 6px 10px rgba(199, 210, 254, 0.8);
+      overflow: hidden; /* prevent scroll */
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .patient-photo {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid white;
+      background: #ddd;
+    }
+    .patient-name {
+      font-weight: 700;
+      font-size: 1.4rem;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+    }
+    .patient-id {
+      font-weight: 600;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+    .small-label {
+      font-weight: 600;
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-top: 8px;
+    }
+    .data-value {
+      font-weight: 500;
+      font-size: 0.9rem;
+      line-height: 1.2;
+      word-wrap: break-word;
+      margin-top: 2px;
+    }
+    .footer {
+      margin-top: auto;
+      font-size: 0.75rem;
+      opacity: 0.7;
+      text-align: center;
+      font-style: italic;
+      user-select: none;
+    }
+    /* Buttons container */
+    #cardActions {
+      max-width: 360px;
+      margin: 0 auto 2rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    button.action-btn {
+      flex: 1;
+      background-color: #7c3aed;
+      color: white;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.25s;
+    }
+    button.action-btn:hover {
+      background-color: #5b21b6;
+    }
+    .data-value {
+        font-weight: 500;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+        white-space: normal;
+        min-height: 1.2em;
+        margin-top: 2px;
+    }
+
+    .flip-card-front > div > .small-label {
+        margin-top: 10px;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #patientCard, #patientCard * {
+        visibility: visible;
+      }
+      #patientCard {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        box-shadow: none !important;
+      }
+      #cardActions {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body class="bg-gradient-to-b from-purple-50 to-white min-h-screen flex flex-col items-center p-6">
@@ -32,30 +188,58 @@
       <div>
         <label for="patientId" class="block text-gray-700 font-semibold mb-2">Patient ID</label>
         <input type="text" id="patientId" name="patientId" readonly
-          class="w-full border border-gray-300 rounded-2xl p-3 bg-gray-100 cursor-not-allowed" value="PID123456" />
+          class="w-full border border-gray-300 rounded-2xl p-3 bg-gray-100 cursor-not-allowed" />
       </div>
 
       <div>
-        <label for="fullName" class="block text-gray-700 font-semibold mb-2">Full Name</label>
+        <label for="photo" class="block text-gray-700 font-semibold mb-2">Upload Photo <span class="mandatory">*</span></label>
+        <input type="file" id="photo" name="photo" accept="image/*"
+          class="w-full border border-gray-300 rounded-2xl p-3" required />
+      </div>
+
+      <div>
+        <label for="fullName" class="block text-gray-700 font-semibold mb-2">Full Name <span class="mandatory">*</span></label>
         <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
           class="w-full border border-gray-300 rounded-2xl p-3" required />
       </div>
 
       <div>
-        <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
+        <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address (Optional)</label>
         <input type="email" id="email" name="email" placeholder="Enter email"
-          class="w-full border border-gray-300 rounded-2xl p-3" required />
+          class="w-full border border-gray-300 rounded-2xl p-3" />
       </div>
 
       <div>
-        <label for="phone" class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+        <label for="phone" class="block text-gray-700 font-semibold mb-2">Phone Number <span class="mandatory">*</span></label>
         <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210"
           class="w-full border border-gray-300 rounded-2xl p-3" required />
       </div>
 
+      <div class="flex items-center gap-3">
+        <button type="button" id="sendOtpBtn" class="bg-purple-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-purple-700">Send OTP</button>
+        <input type="text" id="otpInput" name="otpInput" placeholder="Enter OTP" class="border border-gray-300 rounded-2xl p-3 flex-1" disabled />
+        <button type="button" id="verifyOtpBtn" disabled class="bg-green-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-green-700">Verify OTP</button>
+      </div>
+      <div id="otpStatus" class="text-sm mt-1 font-semibold"></div>
+
+      <div>
+        <label for="bloodGroup" class="block text-gray-700 font-semibold mb-2">Blood Group <span class="mandatory">*</span></label>
+        <select id="bloodGroup" name="bloodGroup" class="w-full border border-gray-300 rounded-2xl p-3" required>
+          <option value="" disabled selected>Select blood group</option>
+          <option>A+</option>
+          <option>A-</option>
+          <option>B+</option>
+          <option>B-</option>
+          <option>O+</option>
+          <option>O-</option>
+          <option>AB+</option>
+          <option>AB-</option>
+        </select>
+      </div>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <label for="gender" class="block text-gray-700 font-semibold mb-2">Gender</label>
+          <label for="gender" class="block text-gray-700 font-semibold mb-2">Gender <span class="mandatory">*</span></label>
           <select id="gender" name="gender" class="w-full border border-gray-300 rounded-2xl p-3" required>
             <option value="" disabled selected>Select gender</option>
             <option>Male</option>
@@ -66,15 +250,42 @@
         </div>
 
         <div>
-          <label for="dob" class="block text-gray-700 font-semibold mb-2">Date of Birth</label>
+          <label for="dob" class="block text-gray-700 font-semibold mb-2">Date of Birth <span class="mandatory">*</span></label>
           <input type="date" id="dob" name="dob" class="w-full border border-gray-300 rounded-2xl p-3" required />
         </div>
       </div>
 
       <div>
-        <label for="address" class="block text-gray-700 font-semibold mb-2">Address</label>
+        <label for="address" class="block text-gray-700 font-semibold mb-2">Address <span class="mandatory">*</span></label>
         <textarea id="address" name="address" rows="3" placeholder="Enter full address"
-          class="w-full border border-gray-300 rounded-2xl p-3 resize-none"></textarea>
+          class="w-full border border-gray-300 rounded-2xl p-3 resize-none" required></textarea>
+      </div>
+
+      <div>
+        <label for="guardianName" class="block text-gray-700 font-semibold mb-2">Husband/Wife/Guardian Name <span class="mandatory">*</span></label>
+        <input type="text" id="guardianName" name="guardianName" placeholder="Enter guardian name"
+          class="w-full border border-gray-300 rounded-2xl p-3" required />
+      </div>
+
+      <div>
+        <label for="guardianPhone" class="block text-gray-700 font-semibold mb-2">Guardian Phone Number <span class="mandatory">*</span></label>
+        <input type="tel" id="guardianPhone" name="guardianPhone" placeholder="+91 98765 43210"
+          class="w-full border border-gray-300 rounded-2xl p-3" required />
+      </div>
+
+      <div>
+        <label for="relation" class="block text-gray-700 font-semibold mb-2">Relation <span class="mandatory">*</span></label>
+        <select id="relation" name="relation" class="w-full border border-gray-300 rounded-2xl p-3" required>
+          <option value="" disabled selected>Select relation</option>
+          <option>Husband</option>
+          <option>Wife</option>
+          <option>Guardian</option>
+          <option>Father</option>
+          <option>Mother</option>
+          <option>Brother</option>
+          <option>Sister</option>
+          <option>Other</option>
+        </select>
       </div>
 
       <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-2xl py-3 font-semibold shadow-lg transition">
@@ -83,41 +294,269 @@
     </form>
   </main>
 
+  <!-- Card actions -->
+  <div id="cardActions" style="display:none;">
+    <button id="downloadCard" class="action-btn" aria-label="Download Patient ID Card as image">Download Card</button>
+    <button id="printCard" class="action-btn" aria-label="Print Patient ID Card">Print Card</button>
+  </div>
+
+  <!-- Patient Card -->
+  <section class="flip-card" id="patientCard" style="display:none;" tabindex="0" aria-label="Patient ID card">
+    <div class="flip-card-inner" id="flipCardInner" role="button" aria-pressed="false" tabindex="0" aria-label="Flip card">
+      <div class="flip-card-front" aria-hidden="false">
+        <div class="header">
+          <img src="" alt="Patient photo" class="patient-photo" id="cardPhoto" />
+          <div>
+            <div class="patient-name" id="cardFullName"></div>
+            <div class="patient-id" id="cardPatientId"></div>
+          </div>
+        </div>
+        <div>
+          <div class="small-label">Blood Group</div>
+          <div class="data-value" id="cardBloodGroup"></div>
+
+          <div class="small-label">Gender</div>
+          <div class="data-value" id="cardGender"></div>
+
+          <div class="small-label">Date of Birth</div>
+          <div class="data-value" id="cardDob"></div>
+
+          <div class="small-label">Phone Number</div>
+          <div class="data-value" id="cardPhone"></div>
+
+          <div class="small-label">Email</div>
+          <div class="data-value" id="cardEmail"></div>
+        </div>
+        <div class="footer">
+          Medinest ID Card - Click to Flip
+        </div>
+      </div>
+      <div class="flip-card-back" aria-hidden="true">
+        <div>
+          <div class="small-label">Address</div>
+          <div class="data-value" id="cardAddress"></div>
+
+          <div class="small-label" style="margin-top: 12px;">
+            Husband/Wife/Guardian Name
+          </div>
+          <div class="data-value" id="cardGuardianName"></div>
+
+          <div class="small-label" style="margin-top: 8px;">Guardian Phone</div>
+          <div class="data-value" id="cardGuardianPhone"></div>
+
+          <div class="small-label" style="margin-top: 8px;">Relation</div>
+          <div class="data-value" id="cardRelation"></div>
+        </div>
+        <div class="footer">
+          Medinest Confidential
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JS: OTP, form submit, card update, flip, download, print -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('profileForm');
+      const patientCard = document.getElementById('patientCard');
+      const flipCardInner = document.getElementById('flipCardInner');
+      const cardPhoto = document.getElementById('cardPhoto');
 
-      // Sample patient data
-      const patientData = {
-        fullName: "John Doe",
-        email: "john.doe@example.com",
-        phone: "+91 98765 43210",
-        gender: "Male",
-        dob: "1990-05-15",
-        address: "123, MG Road, Chennai, Tamil Nadu, India"
-      };
+      const sendOtpBtn = document.getElementById('sendOtpBtn');
+      const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+      const otpInput = document.getElementById('otpInput');
+      const otpStatus = document.getElementById('otpStatus');
 
-      form.fullName.value = patientData.fullName;
-      form.email.value = patientData.email;
-      form.phone.value = patientData.phone;
-      form.gender.value = patientData.gender;
-      form.dob.value = patientData.dob;
-      form.address.value = patientData.address;
+      const downloadBtn = document.getElementById('downloadCard');
+      const printBtn = document.getElementById('printCard');
+      const cardActions = document.getElementById('cardActions');
 
-      form.addEventListener('submit', e => {
-        e.preventDefault();
-        const profile = {
-          patientId: form.patientId.value,
-          fullName: form.fullName.value.trim(),
-          email: form.email.value.trim(),
-          phone: form.phone.value.trim(),
-          gender: form.gender.value,
-          dob: form.dob.value,
-          address: form.address.value.trim()
-        };
-        alert("Profile saved successfully!");
+      const OTP_CODE = "123456";
+      let otpSent = false;
+      let otpVerified = false;
+
+      // Set max DOB to today
+      const dobInput = form.dob;
+      const todayStr = new Date().toISOString().split('T')[0];
+      dobInput.setAttribute('max', todayStr);
+
+      // Generate Patient ID after save (e.g. PID + timestamp)
+      function generatePatientId() {
+        return "PID" + Date.now();
+      }
+
+      // Preview photo when selected
+      form.photo.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            cardPhoto.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          cardPhoto.src = '';
+        }
       });
 
+      // Send OTP button
+      sendOtpBtn.addEventListener('click', () => {
+        const phoneVal = form.phone.value.trim();
+        if (!phoneVal) {
+          otpStatus.textContent = "Please enter phone number first.";
+          otpStatus.style.color = "red";
+          return;
+        }
+        otpStatus.textContent = "OTP sent to " + phoneVal + ". (Use 123456)";
+        otpStatus.style.color = "green";
+        otpInput.disabled = false;
+        verifyOtpBtn.disabled = false;
+        otpSent = true;
+        otpVerified = false;
+      });
+
+      // Verify OTP button
+      verifyOtpBtn.addEventListener('click', () => {
+        if (!otpSent) {
+          otpStatus.textContent = "Please send OTP first.";
+          otpStatus.style.color = "red";
+          return;
+        }
+        if (otpInput.value.trim() === OTP_CODE) {
+          otpStatus.textContent = "OTP verified successfully!";
+          otpStatus.style.color = "green";
+          otpVerified = true;
+          // Disable input/buttons after verification
+          otpInput.disabled = true;
+          verifyOtpBtn.disabled = true;
+          sendOtpBtn.disabled = true;
+        } else {
+          otpStatus.textContent = "Incorrect OTP. Try again.";
+          otpStatus.style.color = "red";
+          otpVerified = false;
+        }
+      });
+
+      // Flip card on click or keyboard enter/space
+      function toggleFlip() {
+        patientCard.classList.toggle('flipped');
+        const pressed = patientCard.classList.contains('flipped');
+        flipCardInner.setAttribute('aria-pressed', pressed);
+      }
+
+      flipCardInner.addEventListener('click', toggleFlip);
+      flipCardInner.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleFlip();
+        }
+      });
+
+      // Show card with updated info
+      function updateCard(data) {
+        document.getElementById('cardPatientId').textContent = data.patientId;
+        document.getElementById('cardFullName').textContent = data.fullName;
+        document.getElementById('cardBloodGroup').textContent = data.bloodGroup;
+        document.getElementById('cardGender').textContent = data.gender;
+        document.getElementById('cardDob').textContent = new Date(data.dob).toLocaleDateString('en-GB', {
+  day: '2-digit', month: 'short', year: 'numeric'
+});
+        document.getElementById('cardPhone').textContent = data.phone;
+        document.getElementById('cardEmail').textContent = data.email || 'N/A';
+        document.getElementById('cardAddress').textContent = data.address;
+        document.getElementById('cardGuardianName').textContent = data.guardianName;
+        document.getElementById('cardGuardianPhone').textContent = data.guardianPhone;
+        document.getElementById('cardRelation').textContent = data.relation;
+        // Photo already updated on selection
+      }
+
+      // Download card as image
+      downloadBtn.addEventListener('click', () => {
+        // Temporarily remove focus outline for better image
+        const focused = document.activeElement;
+        focused.blur();
+
+        html2canvas(patientCard, {scale: 2}).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'Medinest_PatientID_' + Date.now() + '.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+          if (focused) focused.focus();
+        });
+      });
+
+      // Print card
+      printBtn.addEventListener('click', () => {
+        window.print();
+      });
+
+      // Form submission
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+
+        // Validate OTP verified
+        if (!otpVerified) {
+          alert("Please verify phone number by OTP before saving.");
+          return;
+        }
+
+        // Validate DOB not in future (extra check)
+        if (dobInput.value > todayStr) {
+          alert("Date of Birth cannot be in the future.");
+          return;
+        }
+
+        // Validate photo selected
+        if (!form.photo.files || form.photo.files.length === 0) {
+          alert("Please upload a photo.");
+          return;
+        }
+
+        // Generate Patient ID
+        const pid = generatePatientId();
+        form.patientId.value = pid;
+
+        // Gather data
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          // We already set photo on selection, no need to do again here
+          const profileData = {
+            patientId: pid,
+            fullName: form.fullName.value.trim(),
+            email: form.email.value.trim(),
+            phone: form.phone.value.trim(),
+            bloodGroup: form.bloodGroup.value,
+            gender: form.gender.value,
+            dob: form.dob.value,
+            address: form.address.value.trim(),
+            guardianName: form.guardianName.value.trim(),
+            guardianPhone: form.guardianPhone.value.trim(),
+            relation: form.relation.value
+          };
+
+          // Update card
+          updateCard(profileData);
+
+          // Show card & actions
+          patientCard.style.display = 'block';
+          cardActions.style.display = 'flex';
+
+          // Reset OTP controls for next time
+          otpInput.value = "";
+          otpInput.disabled = true;
+          verifyOtpBtn.disabled = true;
+          sendOtpBtn.disabled = false;
+          otpSent = false;
+          otpVerified = false;
+          otpStatus.textContent = "";
+
+          alert("Profile saved successfully!");
+        };
+        reader.readAsDataURL(form.photo.files[0]);
+      });
+
+      // Logout
       document.getElementById('logoutBtn').addEventListener('click', () => {
         alert('Logging out...');
         location.reload();
@@ -126,3 +565,4 @@
   </script>
 </body>
 </html>
+<!-- phone number should be 10 before that add country code with country flag. in card add phone number side to blood group -->
