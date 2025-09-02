@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Medinest - Patient Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      ring-width: 2;
+      ring-color: #7c3aed;
+      border-color: #7c3aed;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-purple-50 to-white min-h-screen flex flex-col items-center p-6">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md w-full max-w-3xl p-6 rounded-xl flex justify-between items-center sticky top-0 z-10">
+    <h1 class="text-3xl font-bold text-purple-600">Medinest</h1>
+    <button id="logoutBtn" class="text-purple-600 hover:text-purple-800 font-semibold">Logout</button>
+  </header>
+
+  <main class="bg-white w-full max-w-3xl mt-8 rounded-xl shadow-lg p-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Patient Profile</h2>
+
+    <form id="profileForm" class="space-y-6 max-w-xl mx-auto">
+
+      <div>
+        <label for="patientId" class="block text-gray-700 font-semibold mb-2">Patient ID</label>
+        <input type="text" id="patientId" name="patientId" readonly
+          class="w-full border border-gray-300 rounded-2xl p-3 bg-gray-100 cursor-not-allowed" value="PID123456" />
+      </div>
+
+      <div>
+        <label for="fullName" class="block text-gray-700 font-semibold mb-2">Full Name</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Enter full name"
+          class="w-full border border-gray-300 rounded-2xl p-3" required />
+      </div>
+
+      <div>
+        <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Enter email"
+          class="w-full border border-gray-300 rounded-2xl p-3" required />
+      </div>
+
+      <div>
+        <label for="phone" class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210"
+          class="w-full border border-gray-300 rounded-2xl p-3" required />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label for="gender" class="block text-gray-700 font-semibold mb-2">Gender</label>
+          <select id="gender" name="gender" class="w-full border border-gray-300 rounded-2xl p-3" required>
+            <option value="" disabled selected>Select gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="dob" class="block text-gray-700 font-semibold mb-2">Date of Birth</label>
+          <input type="date" id="dob" name="dob" class="w-full border border-gray-300 rounded-2xl p-3" required />
+        </div>
+      </div>
+
+      <div>
+        <label for="address" class="block text-gray-700 font-semibold mb-2">Address</label>
+        <textarea id="address" name="address" rows="3" placeholder="Enter full address"
+          class="w-full border border-gray-300 rounded-2xl p-3 resize-none"></textarea>
+      </div>
+
+      <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-2xl py-3 font-semibold shadow-lg transition">
+        Save Profile
+      </button>
+    </form>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('profileForm');
+
+      // Sample patient data
+      const patientData = {
+        fullName: "John Doe",
+        email: "john.doe@example.com",
+        phone: "+91 98765 43210",
+        gender: "Male",
+        dob: "1990-05-15",
+        address: "123, MG Road, Chennai, Tamil Nadu, India"
+      };
+
+      form.fullName.value = patientData.fullName;
+      form.email.value = patientData.email;
+      form.phone.value = patientData.phone;
+      form.gender.value = patientData.gender;
+      form.dob.value = patientData.dob;
+      form.address.value = patientData.address;
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const profile = {
+          patientId: form.patientId.value,
+          fullName: form.fullName.value.trim(),
+          email: form.email.value.trim(),
+          phone: form.phone.value.trim(),
+          gender: form.gender.value,
+          dob: form.dob.value,
+          address: form.address.value.trim()
+        };
+        alert("Profile saved successfully!");
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        alert('Logging out...');
+        location.reload();
+      });
+    });
+  </script>
+</body>
+</html>
