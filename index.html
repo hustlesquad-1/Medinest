@@ -320,8 +320,7 @@
     </button>
     <div class="collapse navbar-collapse text-center" id="navbarMenu">
       <div class="ms-auto d-lg-flex gap-2">
-        <a href="{% url 'login' %}" class="btn btn-light btn-modern">Login</a>
-        <a href="{% url 'signup' %}" class="btn btn-warning btn-modern">Sign Up</a>
+        <button class="btn btn-light btn-modern" data-bs-toggle="modal" data-bs-target="#loginSignupModal">Login/Signup</button>
         <a href="#book" class="btn btn-success btn-modern nav-link-book">Book Appointment</a>
         <a href="/virtual-consult" class="btn btn-consult btn-modern nav-link-consult">Online Consulting</a>
       </div>
@@ -436,6 +435,58 @@
     <p class="mb-0">&copy; 2025 HealthCare+. All Rights Reserved.</p>
     <small>support@healthcare.com | +91 98765 43210</small>
   </footer>
+
+  <!-- Login/Signup Modal -->
+  <div class="modal fade" id="loginSignupModal" tabindex="-1" aria-labelledby="loginSignupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content glass-card">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginSignupModalLabel">Login/Signup</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-tabs" id="loginSignupTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab" aria-controls="signup" aria-selected="false">Signup</button>
+            </li>
+          </ul>
+          <div class="tab-content" id="loginSignupTabContent">
+            <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+              <form class="mt-3">
+                <div class="mb-3">
+                  <input type="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="mb-3">
+                  <input type="password" class="form-control" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 btn-modern">Login</button>
+              </form>
+            </div>
+            <div class="tab-pane fade" id="signup" role="tabpanel" aria-labelledby="signup-tab">
+              <form class="mt-3">
+                <div class="mb-3">
+                  <input type="text" class="form-control" placeholder="Full Name" required>
+                </div>
+                <div class="mb-3">
+                  <input type="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="mb-3">
+                  <input type="password" class="form-control" placeholder="Password" required>
+                </div>
+                <div class="mb-3">
+                  <input type="password" class="form-control" placeholder="Confirm Password" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100 btn-modern">Signup</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script>
