@@ -135,60 +135,19 @@
             margin-bottom: 20px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(14px);
-            padding: 20px;
+            padding: 20px 30px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
-        header .user-info {
-            display: flex;
-            align-items: center;
-        }
 
-        header .user-info img {
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            margin-right: 10px;
-        }
-
-        header .user-info .notifications {
-            position: relative;
-            margin-left: 20px;
-        }
-
-        header .user-info .notifications .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -10px;
-            background: red;
-            color: white;
-            padding: 3px 5px;
-            border-radius: 50%;
-            font-size: 12px;
-        }
-
-        header .language-dropdown {
-            position: relative;
-            margin-left: 20px;
-        }
-
-        header .language-dropdown select {
-            padding: 5px;
-            border-radius: 14px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-            transition: 0.3s ease;
-        }
-        header .language-dropdown select:focus {
-            border-color: #1976d2;
-            box-shadow: 0 0 10px rgba(25, 118, 210, 0.3);
-        }
 
         h1 {
             font-size: 28px;
             margin-bottom: 10px;
-            color: #1976d2;
+            color: #0d47a1;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         h2 {
@@ -223,42 +182,7 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
 
-        .search-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 20px;
-        }
 
-        .search-container input[type="text"] {
-            padding: 14px 16px;
-            border: 1px solid #ddd;
-            border-radius: 14px;
-            margin-right: 10px;
-            width: 250px;
-            transition: 0.3s ease;
-            font-size: 0.95rem;
-        }
-        .search-container input[type="text"]:focus {
-            border-color: #1976d2;
-            box-shadow: 0 0 10px rgba(25, 118, 210, 0.3);
-        }
-
-        .search-container button {
-            padding: 12px 28px;
-            border: none;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #06b6d4, #3b82f6);
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .search-container button:hover {
-            background: linear-gradient(135deg, #0891b2, #2563eb);
-            box-shadow: 0 4px 12px rgba(0, 150, 200, 0.4);
-            transform: translateY(-2px);
-        }
 
         footer {
             text-align: center;
@@ -293,19 +217,13 @@
                 flex-direction: column;
                 text-align: center;
             }
-            header .user-info img {
-                width: 40px;
-                height: 40px;
-            }
             h1 {
                 font-size: 24px;
             }
             h2 {
                 font-size: 20px;
             }
-            .search-container input[type="text"] {
-                width: 100%;
-            }
+
             .sidebar.collapsed {
                 width: 60px;
             }
@@ -350,35 +268,15 @@
 
     <div class="content" id="content">
         <div class="container-fluid">
-            <header class="d-flex justify-content-between align-items-center mb-4">
-                <div class="user-info d-flex align-items-center">
-                    <img src="https://ui-avatars.com/api/?name=Yogesh&size=50&background=FFA500&color=fff" alt="Profile Picture" class="rounded-circle me-3">
-                    <div>
-                        <strong>Yogesh</strong><br>
-                        <small>Yogesh@gmail.com</small>
-                    </div>
-                    <div class="notifications ms-3 position-relative">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
-                    </div>
-                    <div class="language-dropdown ms-3">
-                        <select class="form-select">
-                            <option value="en">English</option>
-                            <option value="es">Tamil</option>
-                            <option value="fr">Hindi</option>
-                        </select>
-                    </div>
-                </div>
+            <header class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                <h1 class="text-center flex-grow-1 mb-3 mb-md-0">Patient Dashboard</h1>
             </header>
 
             <div class="alert alert-info d-inline-block mb-3" role="alert">
                 <strong>Patient ID: #12345</strong>
             </div>
 
-            <div class="search-container d-flex justify-content-end mb-4">
-                <input type="text" class="form-control me-2" placeholder="Search..." aria-label="Search" style="max-width: 250px;">
-                <button class="btn btn-modern btn-consult">Search</button>
-            </div>
+
 
             <div class="row g-4">
                 <div class="col-lg-6">
