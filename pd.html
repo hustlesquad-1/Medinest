@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal Dashboard</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #0d47a1, #1976d2);
+            color: white;
+            overflow-x: hidden;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.4) !important;
+            padding: 15px 30px;
+            transition: all 0.3s ease;
+        }
+        .navbar a {
+            transition: 0.3s ease;
+        }
+        .navbar a:hover {
+            opacity: 0.85;
+        }
+
+        .btn-modern {
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .btn-consult {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            color: #fff !important;
+            border: none;
+        }
+
+        .btn-consult:hover {
+            background: linear-gradient(135deg, #0891b2, #2563eb);
+            box-shadow: 0 4px 12px rgba(0, 150, 200, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(14px);
+            color: #000;
+            width: 250px;
+            padding: 15px;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            transition: width 0.3s;
+            border-radius: 20px;
+            margin: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            color: #1976d2;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 700;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .sidebar ul li a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            transition: 0.3s ease;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: rgba(25, 118, 210, 0.1);
+            color: #1976d2;
+        }
+
+        .content {
+            margin-left: 290px;
+            padding: 20px;
+            flex: 1;
+            transition: margin-left 0.3s;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(14px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        header .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        header .user-info img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        header .user-info .notifications {
+            position: relative;
+            margin-left: 20px;
+        }
+
+        header .user-info .notifications .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: red;
+            color: white;
+            padding: 3px 5px;
+            border-radius: 50%;
+            font-size: 12px;
+        }
+
+        header .language-dropdown {
+            position: relative;
+            margin-left: 20px;
+        }
+
+        header .language-dropdown select {
+            padding: 5px;
+            border-radius: 14px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            transition: 0.3s ease;
+        }
+        header .language-dropdown select:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 10px rgba(25, 118, 210, 0.3);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 5px;
+            color: #333;
+        }
+
+        .patient-info,
+        .last-visit,
+        .medications,
+        .vital-signs,
+        .history,
+        .upcoming-appointments {
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            border-radius: 18px;
+            background: white;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .patient-info:hover,
+        .last-visit:hover,
+        .medications:hover,
+        .vital-signs:hover,
+        .history:hover,
+        .upcoming-appointments:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .search-container input[type="text"] {
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            margin-right: 10px;
+            width: 250px;
+            transition: 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .search-container input[type="text"]:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 10px rgba(25, 118, 210, 0.3);
+        }
+
+        .search-container button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .search-container button:hover {
+            background: linear-gradient(135deg, #0891b2, #2563eb);
+            box-shadow: 0 4px 12px rgba(0, 150, 200, 0.4);
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 25px 0;
+            color: #eee;
+            border-radius: 20px;
+        }
+        footer small {
+            opacity: 0.8;
+        }
+
+        canvas {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100% !important;
+            height: 300px !important;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+                margin: 10px;
+            }
+            .content {
+                margin-left: 230px;
+            }
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            header .user-info img {
+                width: 40px;
+                height: 40px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            h2 {
+                font-size: 20px;
+            }
+            .search-container input[type="text"] {
+                width: 100%;
+            }
+            .sidebar.collapsed {
+                width: 60px;
+            }
+            .content.collapsed {
+                margin-left: 80px;
+            }
+            .sidebar.collapsed ul li {
+                text-align: center;
+            }
+            .sidebar.collapsed ul li a {
+                font-size: 12px;
+            }
+            .patient-info, .last-visit, .medications, .vital-signs, .history, .upcoming-appointments {
+                padding: 20px;
+            }
+        }
+
+        /* Navbar mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse .btn {
+                margin: 6px 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar" id="sidebar">
+        <h2>Patient Portal</h2>
+        <ul>
+            <li><a href="#profile">Profile</a></li>
+            <li><a href="#appointments">Appointments</a></li>
+            <li><a href="module.html">Module</a></li>
+            <li><a href="queue.html">Queue</a></li>
+            <li><a href="#medications">Medications</a></li>
+            <li><a href="#vital-signs">Vital Signs</a></li>
+            <li><a href="#history">Health Records</a></li>
+            <li><a href="#logout">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content" id="content">
+        <div class="container-fluid">
+            <header class="d-flex justify-content-between align-items-center mb-4">
+                <div class="user-info d-flex align-items-center">
+                    <img src="https://ui-avatars.com/api/?name=Yogesh&size=50&background=FFA500&color=fff" alt="Profile Picture" class="rounded-circle me-3">
+                    <div>
+                        <strong>Yogesh</strong><br>
+                        <small>Yogesh@gmail.com</small>
+                    </div>
+                    <div class="notifications ms-3 position-relative">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                    </div>
+                    <div class="language-dropdown ms-3">
+                        <select class="form-select">
+                            <option value="en">English</option>
+                            <option value="es">Tamil</option>
+                            <option value="fr">Hindi</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+
+            <div class="alert alert-info d-inline-block mb-3" role="alert">
+                <strong>Patient ID: #12345</strong>
+            </div>
+
+            <div class="search-container d-flex justify-content-end mb-4">
+                <input type="text" class="form-control me-2" placeholder="Search..." aria-label="Search" style="max-width: 250px;">
+                <button class="btn btn-modern btn-consult">Search</button>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="patient-info card">
+                        <div class="card-body">
+                            <h2 id="profile" class="card-title">Basic Patient Details</h2>
+                            <p><strong>Name:</strong> John Doe</p>
+                            <p><strong>Age:</strong> 30</p>
+                            <p><strong>Gender:</strong> Male</p>
+                            <p><strong>Contact:</strong> (123) 456-7890</p>
+                            <p><strong>Email:</strong> john.doe@example.com</p>
+                            <button class="btn btn-modern btn-consult mt-3">Edit Profile</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="last-visit card">
+                        <div class="card-body">
+                            <h2>Last Visit Information</h2>
+                            <p><strong>Date:</strong> 2024-12-21</p>
+                            <p><strong>Time:</strong> 10:00 AM</p>
+                            <p><strong>Reason:</strong> Regular Check-up</p>
+                            <p><strong>Hospital:</strong> City Hospital</p>
+                            <p><strong>Address:</strong> 123 Main St, Anytown</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="medications card">
+                        <div class="card-body">
+                            <h2 id="medications">Current Medications</h2>
+                            <ul class="list-unstyled">
+                                <li>💊 Aspirin - 100mg - Twice a day</li>
+                                <li>💊 Lisinopril - 10mg - Once a day</li>
+                                <li>💊 Metformin - 500mg - Twice a day</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="upcoming-appointments card">
+                        <div class="card-body">
+                            <h2>Upcoming Appointments</h2>
+                            <ul class="list-unstyled">
+                                <li>📅 2024-01-30: Dr. Smith - General Consultation</li>
+                                <li>📅 2025-02-10: Dr. Jones - Follow-up Check-up</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="vital-signs card">
+                        <div class="card-body">
+                            <h2 id="vital-signs">Vital Signs</h2>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <canvas id="bpChart"></canvas>
+                                </div>
+                                <div class="col-md-6">
+                                    <canvas id="sugarChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="history card">
+                        <div class="card-body">
+                            <h2 id="history">Medical History</h2>
+                            <ul class="list-unstyled">
+                                <li>📋 2022: Diagnosed with Hypertension</li>
+                                <li>📋 2023: Diagnosed with Type 2 Diabetes</li>
+                                <li>📋 2024: Regular check-up with no major issues</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="text-center mt-5">
+                <p>Patient ID: #12345</p>
+                <p>&copy; 2025 HealthCare System</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Sample Data for BP and Sugar Levels
+        const bpData = {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+            datasets: [{
+                label: 'Blood Pressure Systolic (mmHg)',
+                data: [120, 125, 118, 130, 127, 122, 121, 125],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false
+            }, {
+                label: 'Blood Pressure Diastolic (mmHg)',
+                data: [80, 75, 76, 78, 77, 74, 75, 76],
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        };
+
+        const sugarData = {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+            datasets: [{
+                label: 'Blood Sugar (mg/dL)',
+                data: [59, 68, 70, 62, 68, 69, 57, 70],
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        };
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: true,
+                labels: {
+                    fontColor: '#333'
+                }
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Pressure (mmHg) / Sugar Level (mg/dL)',
+                    },
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: '#333'
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontColor: '#333'
+                    }
+                }]
+            }
+        };
+
+        new Chart(document.getElementById('bpChart'), {
+            type: 'line',
+            data: bpData,
+            options: {
+                ...commonOptions,
+                title: {
+                    display: true,
+                    text: 'Blood Pressure Trends',
+                    fontColor: '#333'
+                }
+            }
+        });
+
+        new Chart(document.getElementById('sugarChart'), {
+            type: 'line',
+            data: sugarData,
+            options: {
+                ...commonOptions,
+                title: {
+                    display: true,
+                    text: 'Blood Sugar Trends',
+                    fontColor: '#333'
+                }
+            }
+        });
+
+        // Sidebar toggle for smaller screens
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+        sidebar.addEventListener('mouseover', () => {
+            sidebar.classList.remove('collapsed');
+            content.classList.remove('collapsed');
+        });
+
+        sidebar.addEventListener('mouseleave', () => {
+            sidebar.classList.add('collapsed');
+            content.classList.add('collapsed');
+        });
+    </script>
+
+  <script>
+    // Reusable function to toggle navbar visibility based on login status
+    function toggleNavbarVisibility() {
+      const navbarButtons = document.getElementById("navbarButtons");
+      const profileIconContainer = document.getElementById("profileIconContainer");
+      if (navbarButtons && profileIconContainer) {
+        const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+        if (isLoggedIn) {
+          navbarButtons.classList.add("d-none");
+          profileIconContainer.classList.remove("d-none");
+        } else {
+          navbarButtons.classList.remove("d-none");
+          profileIconContainer.classList.add("d-none");
+        }
+      }
+    }
+
+    // Immediate toggle to prevent flicker
+    toggleNavbarVisibility();
+
+    // Navbar login/signup toggle logic
+    document.addEventListener("DOMContentLoaded", function () {
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      // Toggle navbar visibility on DOMContentLoaded
+      toggleNavbarVisibility();
+
+      logoutBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        localStorage.removeItem("loggedIn");
+        toggleNavbarVisibility();
+        window.location.href = "index.html";
+      });
+    });
+  </script>
+</body>
+
+</html>
