@@ -14,6 +14,9 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
 
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -291,12 +294,64 @@
   }
 }
 
+/* Profile Dropdown */
+.profile-dropdown {
+  border: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  padding: 8px 0;
+  min-width: 280px;
+}
+
+.dropdown-item {
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+  margin: 2px 8px;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  transform: translateX(5px);
+}
+
+.dropdown-item i {
+  width: 16px;
+  text-align: center;
+}
+
+.dropdown-header {
+  padding: 15px 20px 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+  margin: 0 8px 8px;
+}
+
+.profile-avatar {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-divider {
+  margin: 8px 0;
+}
+
 /* Navbar mobile */
 /* On mobile: full-width buttons */
 @media (max-width: 991px) {
   .navbar-collapse .btn {
     margin: 6px 0;
     width: 100%;
+  }
+  
+  .dropdown-menu {
+    position: static !important;
+    transform: none !important;
+    box-shadow: none;
+    border: 1px solid #dee2e6;
   }
 }
 
@@ -318,11 +373,68 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse text-center" id="navbarMenu">
-      <div class="ms-auto d-lg-flex gap-2">
-        <button class="btn btn-light btn-modern" data-bs-toggle="modal" data-bs-target="#loginSignupModal">Login/Signup</button>
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <div class="ms-auto d-lg-flex gap-2 align-items-center">
         <a href="#book" class="btn btn-success btn-modern nav-link-book">Book Appointment</a>
         <a href="/virtual-consult" class="btn btn-consult btn-modern nav-link-consult">Online Consulting</a>
+        
+        <!-- Profile Dropdown -->
+        <div class="dropdown">
+          <button class="btn btn-outline-light btn-modern" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end profile-dropdown" aria-labelledby="profileDropdown">
+            <!-- Login/Signup Menu Item -->
+            <li id="loginMenuItem" style="display: block;">
+              <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginSignupModal">
+                <i class="fas fa-sign-in-alt me-2"></i>Login/Signup
+              </a>
+            </li>
+            
+            <!-- User Profile Details (shown when logged in) -->
+            <div id="userProfileDetails" style="display: none;">
+              <li class="dropdown-header">
+                <div class="d-flex align-items-center">
+                  <div class="profile-avatar me-3">
+                    <i class="fas fa-user-circle fa-2x text-primary"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold" id="profileUsername">John Doe</div>
+                    <small class="text-muted" id="profileEmail">john.doe@example.com</small>
+                  </div>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <div class="px-3 py-2">
+                  <div class="row mb-2">
+                    <div class="col-4"><small class="text-muted">Phone:</small></div>
+                    <div class="col-8"><small id="profilePhone">+1 234 567 8900</small></div>
+                  </div>
+                  <div class="row mb-2">
+                    <div class="col-4"><small class="text-muted">Email:</small></div>
+                    <div class="col-8"><small id="profileEmailDetail">john.doe@example.com</small></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4"><small class="text-muted">Member Since:</small></div>
+                    <div class="col-8"><small id="profileJoinDate">January 2024</small></div>
+                  </div>
+                </div>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                  <i class="fas fa-key me-2"></i>Change Password
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#" onclick="handleLogout()">
+                  <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+              </li>
+            </div>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -334,7 +446,7 @@
     <p class="lead animate__animated animate__fadeInUp mt-3">
       Book appointments, consult doctors & access records — all in one place.
     </p>
-    <a href="#book" class="btn btn-light btn-modern mt-4 animate__animated animate__zoomIn">Get Started</a>
+    <a href="#" id="heroGetStarted" class="btn btn-light btn-modern mt-4 animate__animated animate__zoomIn">Get Started</a>
   </section>
 
   <!-- Why Choose Us -->
@@ -425,7 +537,7 @@
       <div class="p-5 text-center rounded-4 shadow-lg" style="background: linear-gradient(135deg,#1976d2,#42a5f5);color:white;">
         <h2 class="fw-bold mb-3">Take Control of Your Health Today</h2>
         <p class="mb-4">Book your appointment at top hospitals with ease and confidence.</p>
-        <a href="#book" class="btn btn-light btn-lg rounded-pill px-5 shadow-sm">Book Appointment</a>
+        <a href="pd.html" class="btn btn-light btn-lg rounded-pill px-5 shadow-sm">Get Started</a>
       </div>
     </div>
   </section>
@@ -435,6 +547,35 @@
     <p class="mb-0">&copy; 2025 HealthCare+. All Rights Reserved.</p>
     <small>support@healthcare.com | +91 98765 43210</small>
   </footer>
+
+  <!-- Change Password Modal -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content glass-card">
+        <div class="modal-header">
+          <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="changePasswordForm">
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="currentPassword" required>
+            </div>
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">New Password</label>
+              <input type="password" class="form-control" id="newPassword" required>
+            </div>
+            <div class="mb-3">
+              <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirmNewPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 btn-modern">Change Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Login/Signup Modal -->
   <div class="modal fade" id="loginSignupModal" tabindex="-1" aria-labelledby="loginSignupModalLabel" aria-hidden="true">
@@ -490,6 +631,97 @@
 
   <!-- Scripts -->
   <script>
+// Login state management
+let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+let userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+
+// Function to update UI based on login state
+function updateLoginUI() {
+  const loginMenuItem = document.getElementById('loginMenuItem');
+  const userProfileDetails = document.getElementById('userProfileDetails');
+  
+  if (isLoggedIn) {
+    // Hide login menu item and show user profile details
+    if (loginMenuItem) {
+      loginMenuItem.style.display = 'none';
+    }
+    if (userProfileDetails) {
+      userProfileDetails.style.display = 'block';
+      updateProfileDisplay();
+    }
+  } else {
+    // Show login menu item and hide user profile details
+    if (loginMenuItem) {
+      loginMenuItem.style.display = 'block';
+    }
+    if (userProfileDetails) {
+      userProfileDetails.style.display = 'none';
+    }
+  }
+}
+
+// Function to update profile display with user data
+function updateProfileDisplay() {
+  document.getElementById('profileUsername').textContent = userProfile.name || 'User';
+  document.getElementById('profileEmail').textContent = userProfile.email || 'user@example.com';
+  document.getElementById('profilePhone').textContent = userProfile.phone || '+1 234 567 8900';
+  document.getElementById('profileEmailDetail').textContent = userProfile.email || 'user@example.com';
+  document.getElementById('profileJoinDate').textContent = userProfile.joinDate || 'January 2024';
+}
+
+// Function to handle login
+function handleLogin(userData = null) {
+  isLoggedIn = true;
+  localStorage.setItem('isLoggedIn', 'true');
+  
+  // Save user profile data
+  if (userData) {
+    userProfile = userData;
+    localStorage.setItem('userProfile', JSON.stringify(userProfile));
+  } else {
+    // Default profile data for demo
+    userProfile = {
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      phone: '+1 234 567 8900',
+      joinDate: 'January 2024'
+    };
+    localStorage.setItem('userProfile', JSON.stringify(userProfile));
+  }
+  
+  updateLoginUI();
+  
+  // Close the modal
+  const modal = bootstrap.Modal.getInstance(document.getElementById('loginSignupModal'));
+  if (modal) {
+    modal.hide();
+  }
+  
+  // Show success message
+  Swal.fire({
+    icon: 'success',
+    title: 'Login Successful!',
+    text: 'You are now logged in.',
+    confirmButtonText: 'Great!',
+    confirmButtonColor: '#1976d2'
+  });
+}
+
+// Function to handle logout
+function handleLogout() {
+  isLoggedIn = false;
+  localStorage.removeItem('isLoggedIn');
+  updateLoginUI();
+  
+  Swal.fire({
+    icon: 'info',
+    title: 'Logged Out',
+    text: 'You have been logged out.',
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#1976d2'
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   let today = new Date().toISOString().split("T")[0];
 
@@ -521,6 +753,142 @@ document.addEventListener("DOMContentLoaded", function () {
 
   timeInput.addEventListener("input", validateDateTime);
   dateInput.addEventListener("input", validateDateTime);
+
+  // Update UI on page load
+  updateLoginUI();
+
+  // Handle Get Started button click (hero section)
+  const getStartedButton = document.getElementById('heroGetStarted');
+  if (getStartedButton) {
+    getStartedButton.addEventListener('click', function(e) {
+      e.preventDefault(); // Always prevent default to avoid scrolling
+      
+      if (!isLoggedIn) {
+        // Show login modal - user must login first
+        const modal = new bootstrap.Modal(document.getElementById('loginSignupModal'));
+        modal.show();
+      } else {
+        // If logged in, redirect to pd.html
+        window.location.href = 'pd.html';
+      }
+    });
+  }
+
+  // Handle login form submission
+  const loginForm = document.querySelector('#login form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Simple validation - in real app, you'd validate credentials
+      const email = this.querySelector('input[type="email"]').value;
+      const password = this.querySelector('input[type="password"]').value;
+      
+      if (email && password) {
+        // Create user data from login form
+        const userData = {
+          name: email.split('@')[0], // Use email prefix as name
+          email: email,
+          phone: '+1 234 567 8900', // Default phone
+          joinDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+        };
+        handleLogin(userData);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Please fill in all fields.',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  }
+
+  // Handle signup form submission
+  const signupForm = document.querySelector('#signup form');
+  if (signupForm) {
+    signupForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Simple validation - in real app, you'd validate and create account
+      const name = this.querySelector('input[placeholder="Full Name"]').value;
+      const email = this.querySelector('input[type="email"]').value;
+      const password = this.querySelector('input[placeholder="Password"]').value;
+      const confirmPassword = this.querySelector('input[placeholder="Confirm Password"]').value;
+      
+      if (name && email && password && confirmPassword) {
+        if (password === confirmPassword) {
+          // Create user data from signup form
+          const userData = {
+            name: name,
+            email: email,
+            phone: '+1 234 567 8900', // Default phone
+            joinDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+          };
+          handleLogin(userData); // Auto-login after signup
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Passwords do not match.',
+            confirmButtonText: 'OK'
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Please fill in all fields.',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  }
+
+  // Handle change password form submission
+  const changePasswordForm = document.getElementById('changePasswordForm');
+  if (changePasswordForm) {
+    changePasswordForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+      
+      if (currentPassword && newPassword && confirmNewPassword) {
+        if (newPassword === confirmNewPassword) {
+          // Close modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+          if (modal) {
+            modal.hide();
+          }
+          
+          // Show success message
+          Swal.fire({
+            icon: 'success',
+            title: 'Password Changed!',
+            text: 'Your password has been updated successfully.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#1976d2'
+          });
+          
+          // Clear form
+          this.reset();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'New passwords do not match.',
+            confirmButtonText: 'OK'
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Please fill in all fields.',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  }
 
   document.getElementById("appointmentForm").addEventListener("submit", function (event) {
     event.preventDefault();
